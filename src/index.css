@@ -15,7 +15,7 @@ body {
   background-color: #08080a;
   color: #ffffff;
   font-family: 'Inter', sans-serif;
-  overflow: hidden; /* Disable vertical scroll to force horizontal experience */
+  overflow: hidden; /* Disable vertical scroll to force horizontal experience on desktop */
 }
 
 .material-symbols-outlined {
@@ -48,14 +48,40 @@ body {
   justify-content: center;
 }
 
+/* Responsive fallback: vertical scroll on small screens (responsive-design.md).
+   Touch devices keep native scrolling; no wheel hijack is applied there. */
+@media (max-width: 768px) {
+  .horizontal-scroller {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    height: 100vh;
+  }
+
+  .section-spread {
+    flex: 0 0 100vh;
+    width: 100vw;
+    height: 100vh;
+    scroll-snap-align: start;
+  }
+}
+
+/* Accessible focus ring: never remove outlines without a replacement. */
+:focus-visible {
+  outline: 2px solid #3cd7ff;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 .snap-center-force {
   scroll-snap-align: center;
 }
 
 .glass-nav {
-  backdrop-filter: blur(24px);
-  background: rgba(8, 8, 10, 0.85);
-  border: 1px solid rgba(0, 144, 174, 0.2);
+  backdrop-filter: blur(20px);
+  background: rgba(8, 8, 10, 0.8);
+  border: 1px solid rgba(60, 215, 255, 0.2);
 }
 
 .section-fade-in {
@@ -74,19 +100,36 @@ body {
 }
 
 .work-grid::-webkit-scrollbar {
-  height: 2px;
+  height: 4px;
 }
 
 .work-grid::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .work-grid::-webkit-scrollbar-thumb {
-  background: rgba(0, 144, 174, 0.5);
-  border-radius: 1px;
+  background: #3cd7ff;
+  border-radius: 2px;
 }
 
 ::selection {
   background-color: #000000;
   color: #ffffff;
+}
+
+/* Respect reduced-motion: kill non-essential transitions/animations.
+   See animation-guidelines.md + accessibility.md. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .parallax-img {
+    transform: none !important;
+  }
 }

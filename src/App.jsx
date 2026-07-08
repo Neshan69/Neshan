@@ -1,12 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import ShaderBackground from "./components/ShaderBackground";
 import Header from "./components/Header";
 import NavBar from "./components/NavBar";
-import Expertise from "./sections/Expertise";
-import Work from "./sections/Work";
-import Home from "./sections/Home";
-import About from "./sections/About";
-import Contact from "./sections/Contact";
+import useIsVertical from "./hooks/useIsVertical";
+
+const Expertise = lazy(() => import("./sections/Expertise"));
+const Work = lazy(() => import("./sections/Work"));
+const Home = lazy(() => import("./sections/Home"));
+const About = lazy(() => import("./sections/About"));
+const Contact = lazy(() => import("./sections/Contact"));
 
 const SECTIONS = [
   { id: "expertise", label: "EXPERTISE" },
@@ -19,15 +21,19 @@ const SECTIONS = [
 export default function App() {
   const scrollerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(2);
+  const indexRef = useRef(2);
+  const isVertical = useIsVertical();
 
-  const scrollToSection = useCallback((index) => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    scroller.scrollTo({
-      left: window.innerWidth * index,
-      behavior: "smooth",
-    });
-  }, []);
+  const scrollToSection = useCallback(
+    (index) => {
+      const scroller = scrollerRef.current;
+      if (!scroller) return;
+      const viewport = isVertical ? window.innerHeight : window.innerWidth;
+      const axis = isVertical ? "top" : "left";
+      scroller.scrollTo({ [axis]: viewport * index, behavior: "smooth" });
+    },
+    [isVertical]
+  );
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -38,7 +44,10 @@ export default function App() {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const index = Math.round(scroller.scrollLeft / window.innerWidth);
+        const viewport = isVertical ? window.innerHeight : window.innerWidth;
+        const index = Math.round(scroller.scrollLeft / viewport) ||
+          Math.round(scroller.scrollTop / viewport);
+        indexRef.current = index;
         setActiveIndex(index);
         ticking = false;
       });
@@ -49,47 +58,66 @@ export default function App() {
     scrollToSection(2);
 
     return () => scroller.removeEventListener("scroll", onScroll);
-  }, [scrollToSection]);
+  }, [scrollToSection, isVertical]);
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "ArrowRight" && activeIndex < SECTIONS.length - 1) {
+      if (e.key === "ArrowRight" && !isVertical && activeIndex < SECTIONS.length - 1) {
         scrollToSection(activeIndex + 1);
-      } else if (e.key === "ArrowLeft" && activeIndex > 0) {
+      } else if (e.key === "ArrowLeft" && !isVertical && activeIndex > 0) {
+        scrollToSection(activeIndex - 1);
+      } else if (e.key === "ArrowDown" && isVertical && activeIndex < SECTIONS.length - 1) {
+        scrollToSection(activeIndex + 1);
+      } else if (e.key === "ArrowUp" && isVertical && activeIndex > 0) {
         scrollToSection(activeIndex - 1);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [activeIndex, scrollToSection]);
+  }, [activeIndex, scrollToSection, isVertical]);
 
+  // Paginated wheel: advance exactly ONE section per scroll gesture (up/down on
+  // the vertical layout, right/left on the horizontal layout). A short lock
+  // ignores momentum so a single fling can't skip to the end (accessibility.md).
+  // Touch devices keep native scrolling so the experience is never trapped.
   useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
+    let lockUntil = 0;
     const onWheel = (e) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        scrollerRef.current?.scrollBy({ left: e.deltaY, behavior: "auto" });
-        e.preventDefault();
-      }
+      const verticalIntent = Math.abs(e.deltaY) >= Math.abs(e.deltaX);
+      const delta = isVertical ? e.deltaY : verticalIntent ? e.deltaY : e.deltaX;
+      if (Math.abs(delta) < 8) return;
+      e.preventDefault();
+
+      const now = Date.now();
+      if (now < lockUntil) return;
+      lockUntil = now + 800;
+
+      const dir = delta > 0 ? 1 : -1;
+      const current = indexRef.current;
+      const next = Math.min(Math.max(current + dir, 0), SECTIONS.length - 1);
+      if (next !== current) scrollToSection(next);
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
-  }, []);
+  }, [isVertical, scrollToSection]);
 
   return (
     <>
       <ShaderBackground />
-      <Header />
+      <Header onContact={() => scrollToSection(4)} />
       <main className="horizontal-scroller z-10 relative" ref={scrollerRef}>
-        <Expertise active={activeIndex === 0} />
-        <Work active={activeIndex === 1} />
-        <Home active={activeIndex === 2} scrollerRef={scrollerRef} />
-        <About active={activeIndex === 3} />
-        <Contact active={activeIndex === 4} />
+        <Suspense fallback={null}>
+          <Expertise active={activeIndex === 0} />
+          <Work active={activeIndex === 1} />
+          <Home active={activeIndex === 2} scrollerRef={scrollerRef} />
+          <About active={activeIndex === 3} />
+          <Contact active={activeIndex === 4} />
+        </Suspense>
       </main>
-      <NavBar
-        sections={SECTIONS}
-        activeIndex={activeIndex}
-        onNavigate={scrollToSection}
-      />
+      <NavBar sections={SECTIONS} activeIndex={activeIndex} onNavigate={scrollToSection} />
     </>
   );
 }

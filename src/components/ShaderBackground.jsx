@@ -11,50 +11,72 @@ export default function ShaderBackground() {
 
     let time = 0;
     let raf;
+    let running = true;
 
     function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      // Cap DPR for performance (performance.md). The glow is soft, so 2x is plenty.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!running) return;
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       time += 0.005;
 
       for (let i = 0; i < 3; i++) {
-        const x = canvas.width / 2 + Math.cos(time + i) * 300;
-        const y = canvas.height / 2 + Math.sin(time * 0.8 + i) * 150;
+        const x = window.innerWidth / 2 + Math.cos(time + i) * 300;
+        const y = window.innerHeight / 2 + Math.sin(time * 0.8 + i) * 150;
 
         const grad = ctx.createRadialGradient(x, y, 0, x, y, 600);
         // Softened cyan glow
-        grad.addColorStop(0, "rgba(0, 100, 120, 0.08)");
+        grad.addColorStop(0, "rgba(60, 215, 255, 0.12)");
         grad.addColorStop(1, "rgba(8, 8, 10, 0)");
         ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
       }
       raf = requestAnimationFrame(draw);
     }
 
+    function onVisibility() {
+      if (document.hidden) {
+        running = false;
+        cancelAnimationFrame(raf);
+      } else if (!running) {
+        running = true;
+        draw();
+      }
+    }
+
     window.addEventListener("resize", resize);
+    document.addEventListener("visibilitychange", onVisibility);
     resize();
     draw();
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 
   return (
-    <div className="fixed inset-0 z-0">
+    <div className="fixed inset-0 z-0" aria-hidden="true">
       <div className="absolute inset-0 bg-[#08080a]" />
       <div className="absolute inset-0 opacity-30 mix-blend-screen overflow-hidden">
         <canvas ref={canvasRef} className="w-full h-full" id="bg-canvas" />
       </div>
       <img
-        alt="Dark Moon Background"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-screen pointer-events-none"
+        src="https://lh3.googleusercontent.com/aida/AP1WRLsaLWX2cSlhXe-oT3Uo4oL9L-gc-AIjHRo4zzI3zeLsbe3zGDxtoJXfaLcWkqQ0KArurPLHpKtVpeAk38Ay7LXHTNS8nE5Cp4MR7mMhz4FvzrpR8-HjZ7qK71U0HHDOaUPJpXFiwtnwBdo8zrPlN4Pjsaan5z1VpZU_JG5Mnq0-cPVp07t5P4CjBPGa9bOGjhxAluI-1mYZUWi7lW_g2HaGjrJlyAO9HOujChU2SPxGsvvznKijVyZT7w"
+      />
+      <img
+        alt=""
         className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
-        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuDTvRY15pZeLaNcj09Apz-R9w-MFTO_T0rNoLvqPwpdYDjMlGQy1hyeQwZf6X3-8umqlBYyMMVd0gyZuQNoKOkBEy-klL5CvYLNdyeppvODbBYx-8-WDtw25FDZPB1S36ThkhApFg7TmelA5rXXX_RAkrAp-6ylyNF-QSDlS8GVNuQ3MS4w5VTIQhaHCzprXt_EpdcPA4NWIYVIA_rN488u-oS0RIcRyeCJHuBwXJQhHdKDnkJuS8s--TXCINdshN5weiOQ1-OYs"
+        src="https://lh3.googleusercontent.com/aida/AP1WRLsaLWX2cSlhXe-oT3Uo4oL9L-gc-AIjHRo4zzI3zeLsbe3zGDxtoJXfaLcWkqQ0KArurPLHpKtVpeAk38Ay7LXHTNS8nE5Cp4MR7mMhz4FvzrpR8-HjZ7qK71U0HHDOaUPJpXFiwtnwBdo8zrPlN4Pjsaan5z1VpZU_JG5Mnq0-cPVp07t5P4CjBPGa9bOGjhxAluI-1mYZUWi7lW_g2HaGjrJlyAO9HOujChU2SPxGsvvznKijVyZT7w"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-surface/80 via-transparent to-surface/90 pointer-events-none" />
     </div>

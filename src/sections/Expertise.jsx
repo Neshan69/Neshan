@@ -1,39 +1,45 @@
+import Reveal from "../components/Reveal";
+import MicroLabel from "../components/MicroLabel";
+
 export default function Expertise({ active }) {
   const items = [
     {
-      title: "Systems Design",
-      body: "Developing scalable design languages that bridge the gap between aesthetic vision and engineering constraints.",
+      title: "UI/UX Design",
+      body: "Editorial aesthetics and precision systems that bridge the gap between vision and engineering.",
     },
     {
-      title: "Spatial Strategy",
-      body: "Applying architectural principles to digital environments to create intuitive flows and rhythmic interactions.",
+      title: "Frontend",
+      body: "Building robust interfaces with React, Core JavaScript, and TypeScript for seamless performance.",
     },
     {
-      title: "Interaction Logic",
-      body: "Crafting high-fidelity prototypes and motion systems that define the emotional signature of a product.",
+      title: "Infrastructure",
+      body: "Deep expertise in Networking, Network OS, and Linux environments for scalable digital foundations.",
+    },
+    {
+      title: "Security",
+      body: "SOC L1 Analyst background ensuring every design and system is built with a security-first mindset.",
     },
   ];
 
   return (
     <section
       id="expertise"
+      aria-label="Capabilities"
       className={`section-spread snap-center-force bg-surface/40 backdrop-blur-sm px-8 md:px-32 ${
         active ? "active" : ""
       }`}
     >
-      <div className="max-w-6xl w-full section-fade-in">
-        <span className="text-secondary font-bold text-[10px] tracking-[0.2em] mb-4 block uppercase opacity-80">
-          01 / CAPABILITIES
-        </span>
+      <Reveal className="max-w-6xl w-full">
+        <MicroLabel className="mb-4 block">01 / CAPABILITIES</MicroLabel>
         <h2 className="font-display text-7xl md:text-8xl font-bold text-primary mb-16 leading-tight">
           Mastering
           <br />
           Complexity
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-outline-variant pt-12">
+        <div className="grid grid-cols-1 gap-12 border-t border-outline-variant pt-12 md:grid-cols-2">
           {items.map((item) => (
             <div key={item.title} className="space-y-4">
-              <div className="w-12 h-1 bg-secondary mb-6 shadow-[0_0_8px_rgba(0,144,174,0.3)] opacity-80" />
+              <div className="w-12 h-1 bg-secondary mb-6 shadow-[0_0_10px_#3cd7ff]" />
               <h3 className="font-display text-2xl font-semibold text-primary">
                 {item.title}
               </h3>
@@ -43,7 +49,7 @@ export default function Expertise({ active }) {
             </div>
           ))}
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }
