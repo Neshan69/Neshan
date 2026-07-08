@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@0,400;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #08080a;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden; /* Disable vertical scroll to force horizontal experience */
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+}
+
+.horizontal-scroller {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  width: 100vw;
+  height: 100vh;
+}
+
+.horizontal-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.section-spread {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100vh;
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.snap-center-force {
+  scroll-snap-align: center;
+}
+
+.glass-nav {
+  backdrop-filter: blur(24px);
+  background: rgba(8, 8, 10, 0.85);
+  border: 1px solid rgba(0, 144, 174, 0.2);
+}
+
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.active .section-fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.parallax-img {
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-grid::-webkit-scrollbar {
+  height: 2px;
+}
+
+.work-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.work-grid::-webkit-scrollbar-thumb {
+  background: rgba(0, 144, 174, 0.5);
+  border-radius: 1px;
+}
+
+::selection {
+  background-color: #000000;
+  color: #ffffff;
+}
