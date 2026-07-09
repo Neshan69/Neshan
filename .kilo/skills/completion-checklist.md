@@ -1,7 +1,9 @@
 # completion-checklist.md
 
-**Purpose:** Per-feature completion before handing off.
-**When to use:** A feature/task is coded and self-reviewed.
+**STATUS: SUPERSEDED** by `completion-rules.md`. This file is kept for reference only.
+
+**Purpose (legacy):** Per-feature completion before handing off.
+**When to use (legacy):** A feature/task is coded and self-reviewed.
 
 **Rules**
 - [ ] Acceptance: matches the request and roadmap intent (project-roadmap.md).

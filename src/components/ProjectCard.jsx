@@ -3,11 +3,11 @@ import SmartImage from "../components/SmartImage";
 export default function ProjectCard({ project }) {
   return (
     <article
-      className={`min-w-[320px] md:min-w-[500px] snap-start group ${
+      className={`min-w-[220px] md:min-w-[280px] snap-start group ${
         project.cursorNone ? "cursor-none" : ""
       }`}
     >
-      <div className="relative overflow-hidden aspect-[4/5] bg-outline-variant/30 border border-white/5">
+      <div className="relative overflow-hidden aspect-[16/10] bg-outline-variant/30 border border-white/5">
         <SmartImage
           className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 group-hover:scale-105"
           src={project.src}
@@ -19,11 +19,11 @@ export default function ProjectCard({ project }) {
           </span>
         </div>
       </div>
-      <div className="mt-6">
+      <div className="mt-4">
         <p className="text-[10px] font-bold tracking-widest text-secondary mb-2">
           {project.tag}
         </p>
-        <h4 className="font-display text-3xl font-semibold text-primary">
+        <h4 className="font-display text-2xl md:text-3xl font-semibold text-primary">
           {project.title}
         </h4>
       </div>

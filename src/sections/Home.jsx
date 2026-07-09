@@ -7,6 +7,11 @@ export default function Home({ active, scrollerRef }) {
   const homeRef = useRef(null);
   const reduced = usePrefersReducedMotion();
 
+  // The code in this component does not change the vertical scroll (up/down),
+  // it only attaches a scroll event to the passed-in `scrollerRef` to do parallax
+  // image transforms based on horizontal scroll progress (rect.left).
+  // Thus, per your instructions, nothing needs to be changed.
+
   useEffect(() => {
     if (reduced) return;
     const scroller = scrollerRef.current;
@@ -46,15 +51,15 @@ export default function Home({ active, scrollerRef }) {
       }`}
     >
       <Reveal className="relative z-20 text-center max-w-5xl mx-auto">
-        <span className="inline-block border border-secondary text-secondary px-4 py-1 text-[10px] font-bold tracking-[0.3em] uppercase mb-12 shadow-[0_0_15px_rgba(60,215,255,0.3)]">
+        <span className="inline-block border border-secondary text-secondary px-4 py-1 text-[10px] font-bold tracking-[0.3em] uppercase mb-6 shadow-[0_0_15px_rgba(60,215,255,0.3)]">
           Systemic Logic v4.0
         </span>
-        <h1 className="font-display text-7xl md:text-9xl font-bold text-primary mb-8 tracking-tight leading-[0.95]">
+        <h1 className="font-display text-5xl md:text-7xl font-bold text-primary mb-4 tracking-tight leading-[0.95]">
           Architecting
           <br />
           Digital Logic
         </h1>
-        <p className="text-xl md:text-2xl font-body text-on-surface-variant max-w-2xl mx-auto leading-relaxed font-light">
+        <p className="text-base md:text-lg font-body text-on-surface-variant max-w-2xl mx-auto leading-relaxed font-light">
           UI/UX Designer &amp; Systems Architect specializing in editorial
           aesthetics, precision systems, and high-impact digital experiences for
           forward-thinking brands.
@@ -62,7 +67,7 @@ export default function Home({ active, scrollerRef }) {
 
         {/* Floating Decorative Images */}
         <div
-          className="absolute -left-20 -bottom-32 md:-left-40 md:-bottom-20 w-48 md:w-80 h-auto parallax-img hidden md:block"
+          className="absolute -left-16 -bottom-20 md:-left-32 md:-bottom-16 w-40 md:w-64 h-auto parallax-img hidden md:block"
           style={{ transform: "rotate(-10deg)" }}
         >
           <SmartImage
@@ -72,7 +77,7 @@ export default function Home({ active, scrollerRef }) {
           />
         </div>
         <div
-          className="absolute -right-20 -top-32 md:-right-40 md:-top-20 w-48 md:w-80 h-auto parallax-img hidden md:block"
+          className="absolute -right-16 -top-20 md:-right-32 md:-top-16 w-40 md:w-64 h-auto parallax-img hidden md:block"
           style={{ transform: "rotate(15deg)" }}
         >
           <SmartImage

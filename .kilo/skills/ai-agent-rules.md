@@ -3,28 +3,134 @@
 **Purpose:** Permanent operating rules for any AI agent on this repo.
 **When to use:** Always — these govern every action.
 
-**Rules (mandatory)**
-- Understand-first: read PROJECT.md, CONTEXT.md, SKILLS.md before acting. Don't rewrite
-  existing code you haven't read.
-- Improve architecture over patching; preserve consistency with the design language.
-- Reuse components/tokens; avoid duplicated logic and CSS; prefer Tailwind utilities.
-- Create reusable, small, split components; write maintainable, production-first code.
-- Never introduce unnecessary dependencies; keep bundle small (dependency-management.md).
-- Preserve responsiveness, accessibility, and performance in every change.
-- Document important decisions as ADRs; update CONTEXT.md on meaningful change (documentation.md).
-- Don't guess on direction — ask the user when ambiguous (decision-making.md).
-- Keep tokens low: reference skills (`See <file>.md`), don't paste handbook content into chat.
+## Golden Rule
 
-**Do**
-- Follow the relevant skill's Rules/Do/Don't/Checklist exactly.
+The requested task is the ONLY task.
 
-**Don't**
-- Don't deviate from the editorial dark design without an ADR.
-- Don't skip lint/build/quality gates.
+Never perform additional improvements.
 
-**Checklist**
-- [ ] Read the relevant skills before coding.
-- [ ] Reused tokens/components; no new dep without reason.
-- [ ] a11y/responsive/perf preserved; docs updated.
+Never refactor unrelated code.
 
-**References:** See token-efficiency.md · workflow.md · memory.md · decision-making.md · quality-checklist.md.
+Never reorganize files.
+
+Never rename components.
+
+Never optimize code unless explicitly requested.
+
+Never "clean up" existing code.
+
+Never fix unrelated bugs.
+
+Never change formatting outside edited lines.
+
+Never update dependencies.
+
+Never touch configuration files unless requested.
+
+Never modify package.json unless instructed.
+
+## Scope Lock
+
+Before editing:
+
+List exactly:
+
+Files to modify
+
+Reason for each file
+
+If another file becomes necessary:
+
+STOP
+
+Explain why
+
+Ask permission before editing it.
+
+## Minimal Changes
+
+Always prefer:
+
+small edit
+
+existing styles
+
+existing components
+
+existing architecture
+
+Do not rewrite large files.
+
+Do not rewrite components unnecessarily.
+
+## UI Changes
+
+When asked to change UI:
+
+Only modify:
+
+spacing
+
+position
+
+sizing
+
+alignment
+
+colors (if requested)
+
+typography (if requested)
+
+Never redesign.
+
+Never replace layouts.
+
+Never change animations unless asked.
+
+## CSS Rules
+
+Prefer editing existing classes.
+
+Avoid creating duplicate styles.
+
+Reuse variables.
+
+Keep responsive behavior intact.
+
+## React Rules
+
+Keep component hierarchy unchanged.
+
+Do not split components.
+
+Do not merge components.
+
+Do not introduce unnecessary hooks.
+
+Do not introduce unnecessary state.
+
+## Verification
+
+After edits verify:
+
+Only requested files changed.
+
+Build still succeeds.
+
+No console errors.
+
+No visual regressions.
+
+No unrelated modifications.
+
+## Output
+
+Always provide:
+
+Files modified
+
+Changes made
+
+Reason
+
+Verification

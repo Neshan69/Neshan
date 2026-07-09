@@ -1,7 +1,9 @@
 # quality-checklist.md
 
-**Purpose:** Universal quality gate before "done".
-**When to use:** End of any task.
+**STATUS: SUPERSEDED** by `verification.md` and `self-review.md`. This file is kept for reference only.
+
+**Purpose (legacy):** Universal quality gate before "done".
+**When to use (legacy):** End of any task.
 
 **Rules**
 - [ ] `npm run lint` passes with no errors/warnings.

@@ -1,7 +1,9 @@
 # refactoring.md
 
-**Purpose:** Improve structure without changing behavior.
-**When to use:** Cleaning up, splitting large files, reducing duplication.
+**STATUS: SUPERSEDED** by `editing-strategy.md`. This file is kept for reference only.
+
+**Purpose (legacy):** Improve structure without changing behavior.
+**When to use (legacy):** Cleaning up, splitting large files, reducing duplication.
 
 **Rules**
 - Refactor only with a clear goal (duplication, huge component, mixed concerns).

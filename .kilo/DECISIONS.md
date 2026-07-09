@@ -74,3 +74,47 @@ badge, Expertise accents, Home badge, canvas glow, and NavBar active border upda
 Content synced: About 2nd paragraph + `border-l-4`, Contact textarea + Instagram.
 Docs (design-system.md, design-principles.md, tailwind-guidelines.md, PROJECT.md)
 updated to the new token.
+
+## ADR-13: "Let's Talk" chat page (in-app view switch)
+Added `src/sections/Chat.jsx` — a self-contained chat experience opened by the
+header "LET'S TALK" button. No router added yet (routing.md is future); `App.jsx`
+uses a `view` state (`"portfolio"` | `"chat"`) to swap the horizontal scroller for
+the chat page. Chat's bottom-nav returns to the portfolio at a section via a
+double-rAF after remount. Uses brand tokens (`secondary`, `glass-nav`); chat-only
+CSS (`.chat-bubble-*`, `.typing-dot`, `.chat-container`) lives in `index.css`.
+Messages animate in via framer-motion and honor reduced-motion.
+
+## ADR-14: Chat transition, auto-scroll fix, future-ready send
+- Portfolio ↔ chat now cross-fade via `AnimatePresence` + `motion.div` (opacity
+  only, 0.35s) in `App.jsx` — fixed children stay viewport-fixed since no transform
+  is animated. `ShaderBackground` persists across the transition.
+- Fixed broken auto-scroll: `containerRef` was on a 1px sentinel; now attached to
+  the scroll container (`<main>`) and scrolls to bottom on every message/typing
+  change via `requestAnimationFrame`.
+- Fixed nav-from-chat: replaced the unreliable double-rAF with `pendingIndexRef`
+  consumed by the portfolio mount effect (lands on the chosen section on return).
+- `send()` is the documented extension point for a real backend (api-design.md);
+  pending auto-reply timer is cleared on unmount to avoid setState-after-unmount.
+
+## ADR-15: Fix return-from-chat nav desync (underline gone / laggy)
+Symptom: after leaving the chat via its rail, the portfolio NavBar active underline
+disappeared and scrolling felt laggy.
+- **Primary cause:** the scroll/active-index effect in `App.jsx` had deps
+  `[scrollToSection, isVertical]` so it ran only once on initial mount. Opening chat
+  unmounts the portfolio `<main>` (cleanup removes its scroll listener); on return the
+  portfolio remounts a *new* `<main>` but App does not remount, so the effect never
+  re-ran — no listener re-attached and `scrollToSection(pendingIndexRef.current ?? 2)`
+  never executed. The new scroller sat at `scrollLeft 0` (index 0) while `activeIndex`
+  stayed at its pre-chat value, so the NavBar underlined an off-screen item ("gone")
+  and scrolling updated nothing ("laggy").
+- **Secondary cause:** `goToSection` (ADR-14) set `pendingIndexRef` but relied on that
+  one-shot mount effect, which never re-ran on return.
+- **Fix:** (1) added `view` to the scroll effect deps + `if (view !== "portfolio") return`
+  guard so it re-attaches the listener and lands on the pending section on return;
+  (2) removed `AnimatePresence mode="wait"` so the portfolio mounts in the same commit
+  `view` flips (the effect then sees the new scroller); (3) guarded the paginated wheel
+  handler to `view === "portfolio"` so it stops `preventDefault`-hijacking wheel scroll
+  inside the chat.
+- **Confidence:** ~95%. Regression risk low (initial load unchanged; chat wheel scroll
+  now works). Future risk: any effect keyed only on stable deps won't re-run on view
+  switch — keep `view` in deps for view-scoped setup.

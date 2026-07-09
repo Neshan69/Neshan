@@ -1,8 +1,9 @@
 # safe-refactoring.md
 
-**Purpose:** Fix/refactor with minimal blast radius. Companion to refactoring.md (process)
-and debug-framework.md (fix generation).
-**When to use:** Generating any fix or cleanup during the debug loop.
+**STATUS: SUPERSEDED** by `editing-strategy.md`. This file is kept for reference only.
+
+**Purpose (legacy):** Fix/refactor with minimal blast radius. Companion to refactoring.md (process) and debug-framework.md (fix generation).
+**When to use (legacy):** Generating any fix or cleanup during the debug loop.
 
 **Rules — prefer smallest safe change**
 - Small fixes over rewrites. Small refactors over restructures. Isolated improvements.

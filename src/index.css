@@ -25,6 +25,7 @@ body {
 .horizontal-scroller {
   display: flex;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -97,6 +98,57 @@ body {
 
 .parallax-img {
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Chat ("Let's Talk") page — see src/sections/Chat.jsx */
+.chat-bubble-admin {
+  background: rgba(44, 44, 46, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chat-bubble-user {
+  background: rgba(60, 215, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(60, 215, 255, 0.3);
+}
+
+.typing-dot {
+  width: 4px;
+  height: 4px;
+  background: #3cd7ff;
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: rgba(60, 215, 255, 0.2);
+  border-radius: 2px;
 }
 
 .work-grid::-webkit-scrollbar {

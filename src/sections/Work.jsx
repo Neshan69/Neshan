@@ -42,10 +42,10 @@ export default function Work({ active }) {
       }`}
     >
       <Reveal className="w-full flex flex-col px-8 md:px-32">
-        <div className="flex justify-between items-end mb-12">
+        <div className="flex justify-between items-end mb-6">
           <div>
             <MicroLabel className="mb-4 block">02 / PORTFOLIO</MicroLabel>
-            <h2 className="font-display text-6xl md:text-7xl font-bold text-primary">
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-primary">
               Selected Work
             </h2>
           </div>
@@ -71,7 +71,7 @@ export default function Work({ active }) {
 
         <div
           ref={gridRef}
-          className="work-grid flex gap-8 overflow-x-auto pb-12 snap-x"
+          className="work-grid flex gap-6 overflow-x-auto pb-6 snap-x"
           tabIndex={0}
           aria-label="Project list"
         >

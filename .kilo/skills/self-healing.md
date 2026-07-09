@@ -1,7 +1,9 @@
 # self-healing.md
 
-**Purpose:** Enable the agent to resolve problems autonomously before asking the user.
-**When to use:** Any error, build failure, runtime/console issue, or regression.
+**STATUS: SUPERSEDED** by `debugging.md` and `workflow.md`. This file is kept for reference only.
+
+**Purpose (legacy):** Enable the agent to resolve problems autonomously before asking the user.
+**When to use (legacy):** Any error, build failure, runtime/console issue, or regression.
 
 **Rules (automatic 20-step scan — do all that apply)**
 1. Understand the problem. 2. Read related files. 3. Understand architecture (architecture.md).

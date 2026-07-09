@@ -1,7 +1,9 @@
 # root-cause-analysis.md
 
-**Purpose:** Determine the real cause before patching. No blind fixes.
-**When to use:** After the debug-framework.md loop gathers context, before generating a fix.
+**STATUS: SUPERSEDED** by `debugging.md`. This file is kept for reference only.
+
+**Purpose (legacy):** Determine the real cause before patching. No blind fixes.
+**When to use (legacy):** After the debug-framework.md loop gathers context, before generating a fix.
 
 **Rules — record all six dimensions for every non-trivial issue**
 - **Primary Cause:** the direct trigger of the failure.

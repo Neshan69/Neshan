@@ -21,8 +21,8 @@ export default function Contact({ active }) {
       }`}
     >
       <Reveal className="max-w-4xl w-full px-8 md:px-16">
-        <MicroLabel className="mb-12 block">04 / INITIATE CONNECTION</MicroLabel>
-        <h2 className="font-display text-6xl md:text-8xl font-bold mb-20 leading-none text-primary">
+        <MicroLabel className="mb-6 block">04 / INITIATE CONNECTION</MicroLabel>
+        <h2 className="font-display text-4xl md:text-5xl font-bold mb-10 leading-none text-primary">
           Let's define the future.
         </h2>
 
@@ -30,14 +30,14 @@ export default function Contact({ active }) {
           <p
             role="status"
             aria-live="polite"
-            className="text-2xl font-display text-secondary"
+            className="text-xl font-display text-secondary"
           >
             Thank you — your proposal is on its way. (Demo form; not yet wired to
             a backend.)
           </p>
         ) : (
-          <form className="space-y-12" onSubmit={handleSubmit} noValidate>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative">
                 <label
                   htmlFor="name"
@@ -82,24 +82,24 @@ export default function Contact({ active }) {
                 id="inquiry"
                 name="inquiry"
                 rows={3}
-                className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display h-32 resize-none text-primary placeholder:text-outline/30"
+                className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display h-24 resize-none text-primary placeholder:text-outline/30"
                 placeholder="How can we collaborate?"
               />
             </div>
             <button
               type="submit"
               disabled={status === "sending"}
-              className="group flex items-center gap-4 text-3xl font-display font-bold text-primary hover:text-secondary transition-colors disabled:opacity-50"
+              className="group flex items-center gap-4 text-xl font-display font-bold text-primary hover:text-secondary transition-colors disabled:opacity-50"
             >
               {status === "sending" ? "SENDING…" : "SEND PROPOSAL"}
-              <span className="material-symbols-outlined text-4xl group-hover:translate-x-4 transition-transform">
+              <span className="material-symbols-outlined text-2xl group-hover:translate-x-4 transition-transform">
                 arrow_forward
               </span>
             </button>
           </form>
         )}
 
-        <div className="mt-32 pt-12 border-t border-outline-variant flex flex-col md:flex-row justify-between text-[10px] font-bold tracking-widest text-on-surface-variant/60">
+        <div className="mt-12 pt-6 border-t border-outline-variant flex flex-col md:flex-row justify-between text-[10px] font-bold tracking-widest text-on-surface-variant/60">
           <p>© 2024 NESHAN NIROULA</p>
           <div className="flex gap-8 mt-4 md:mt-0">
             <a className="hover:text-secondary transition-colors" href="#">

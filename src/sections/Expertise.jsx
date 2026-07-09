@@ -30,13 +30,13 @@ export default function Expertise({ active }) {
       }`}
     >
       <Reveal className="max-w-6xl w-full">
-        <MicroLabel className="mb-4 block">01 / CAPABILITIES</MicroLabel>
-        <h2 className="font-display text-7xl md:text-8xl font-bold text-primary mb-16 leading-tight">
+        <MicroLabel className="mb-2 block">01 / CAPABILITIES</MicroLabel>
+        <h2 className="font-display text-4xl md:text-5xl font-bold text-primary mb-8 leading-tight">
           Mastering
           <br />
           Complexity
         </h2>
-        <div className="grid grid-cols-1 gap-12 border-t border-outline-variant pt-12 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 border-t border-outline-variant pt-6 md:grid-cols-2">
           {items.map((item) => (
             <div key={item.title} className="space-y-4">
               <div className="w-12 h-1 bg-secondary mb-6 shadow-[0_0_10px_#3cd7ff]" />

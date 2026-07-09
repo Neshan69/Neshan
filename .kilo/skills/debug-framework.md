@@ -1,7 +1,9 @@
 # debug-framework.md
 
-**Purpose:** The operating procedure for autonomous debugging.
-**When to use:** Executing the self-healing loop (self-healing.md).
+**STATUS: SUPERSEDED** by `debugging.md`. This file is kept for reference only.
+
+**Purpose (legacy):** The operating procedure for autonomous debugging.
+**When to use (legacy):** Executing the self-healing loop (self-healing.md).
 
 **Iterative loop (repeat until resolved or hard limit)**
 Analyze → Gather Context → Determine Root Cause → Generate Fix → Verify Fix →

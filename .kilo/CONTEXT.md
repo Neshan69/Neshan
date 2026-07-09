@@ -7,7 +7,8 @@ Snapshot of the repo as of 2026-07-08. Update after each milestone.
   snap-scroll experience.
 - `src/main.jsx` → `<App/>` (StrictMode). No router, no state library.
 - `src/App.jsx`: orchestrates 5 sections, `scrollerRef`, `activeIndex` state,
-  `scrollToSection`, keyboard + wheel→horizontal redirection.
+  `scrollToSection`, keyboard + wheel→horizontal redirection, and a `view` switch
+  (`"portfolio"` | `"chat"`) — header "LET'S TALK" opens `src/sections/Chat.jsx`.
 - Sections (`src/sections/`): Expertise, Work, Home, About, Contact (pure, `active` prop).
 - Components (`src/components/`): Header, NavBar, ShaderBackground (2D canvas glow
   + dark-moon image overlay), Reveal (framer-motion scroll reveal), MicroLabel

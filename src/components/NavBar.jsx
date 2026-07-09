@@ -2,7 +2,7 @@ export default function NavBar({ sections, activeIndex, onNavigate }) {
   return (
     <nav
       aria-label="Section navigation"
-      className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 glass-nav px-8 py-4 rounded-full flex items-center gap-2 md:gap-8 shadow-2xl"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 glass-nav px-8 py-4 rounded-full flex items-center gap-2 md:gap-8 shadow-2xl"
     >
       {sections.map((section, i) => {
         const isActive = i === activeIndex;

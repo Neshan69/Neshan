@@ -1,7 +1,9 @@
 # verification-checklist.md
 
-**Purpose:** Prove a fix is safe before declaring done.
-**When to use:** After generating a fix in the debug loop (self-healing.md).
+**STATUS: SUPERSEDED** by `verification.md`. This file is kept for reference only.
+
+**Purpose (legacy):** Prove a fix is safe before declaring done.
+**When to use (legacy):** After generating a fix in the debug loop (self-healing.md).
 
 **Rules — verify ALL after every fix**
 - [ ] Project builds (`npm run build`).
