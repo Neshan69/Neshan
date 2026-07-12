@@ -11,7 +11,7 @@ export default function About({ active }) {
         active ? "active" : ""
       }`}
     >
-      <Reveal className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-12 gap-8 px-8 md:px-16 items-center">
+      <Reveal className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-12 gap-8 px-6 md:px-16 lg:px-24 items-center">
          <div className="md:col-span-5 relative">
            <div className="aspect-[3/4] bg-outline-variant/30 overflow-hidden rounded-lg border border-white/5">
              <SmartImage

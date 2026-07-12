@@ -20,9 +20,9 @@ export default function Contact({ active }) {
         active ? "active" : ""
       }`}
     >
-      <Reveal className="max-w-4xl w-full px-8 md:px-16">
+      <Reveal className="max-w-4xl w-full px-6 md:px-16 lg:px-24">
         <MicroLabel className="mb-6 block">04 / INITIATE CONNECTION</MicroLabel>
-        <h2 className="font-display text-4xl md:text-5xl font-bold mb-10 leading-none text-primary">
+        <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-10 leading-none text-primary">
           Let's define the future.
         </h2>
 

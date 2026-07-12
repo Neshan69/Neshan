@@ -50,11 +50,11 @@ export default function Home({ active, scrollerRef }) {
         active ? "active" : ""
       }`}
     >
-      <Reveal className="relative z-20 text-center max-w-5xl mx-auto">
+      <Reveal className="relative z-20 text-center max-w-5xl mx-auto px-4">
         <span className="inline-block border border-secondary text-secondary px-4 py-1 text-[10px] font-bold tracking-[0.3em] uppercase mb-6 shadow-[0_0_15px_rgba(60,215,255,0.3)]">
           Systemic Logic v4.0
         </span>
-        <h1 className="font-display text-5xl md:text-7xl font-bold text-primary mb-4 tracking-tight leading-[0.95]">
+        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary mb-4 tracking-tight leading-[0.95]">
           Architecting
           <br />
           Digital Logic

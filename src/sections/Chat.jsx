@@ -144,18 +144,18 @@ export default function Chat({ onBack, onExit }) {
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 md:px-16 py-8">
+      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-16 py-6 md:py-8">
         <button
           type="button"
           onClick={onBack}
           aria-label="Back to portfolio"
-          className="font-display font-bold text-2xl tracking-tight text-primary uppercase"
+          className="font-display font-bold text-lg md:text-2xl tracking-tight text-primary uppercase truncate"
         >
           Neshan Niroula
         </button>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#3cd7ff]" />
-          <span className="text-primary text-[10px] font-bold tracking-widest uppercase">
+          <span className="text-primary text-[10px] font-bold tracking-widest uppercase hidden sm:inline">
             Neshan
           </span>
         </div>
@@ -193,12 +193,12 @@ export default function Chat({ onBack, onExit }) {
       </main>
 
       {/* Input bar */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-50">
+      <div className="fixed bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 md:px-6 z-50">
         <div className="glass-nav rounded-2xl p-2 flex items-center gap-2 shadow-2xl border border-white/5">
           <button
             type="button"
             aria-label="Add attachment"
-            className="p-3 text-on-surface-variant hover:text-secondary transition-colors"
+            className="p-2 md:p-3 text-on-surface-variant hover:text-secondary transition-colors"
           >
             <span className="material-symbols-outlined">add_circle</span>
           </button>
@@ -206,7 +206,7 @@ export default function Chat({ onBack, onExit }) {
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
-            className="flex-1 bg-transparent border-none focus:ring-0 text-primary placeholder:text-on-surface-variant/40 py-3 outline-none"
+            className="flex-1 bg-transparent border-none focus:ring-0 text-primary placeholder:text-on-surface-variant/40 py-2 md:py-3 outline-none text-sm md:text-base"
             placeholder="Describe your vision..."
             type="text"
             aria-label="Message"
@@ -214,7 +214,7 @@ export default function Chat({ onBack, onExit }) {
           <button
             type="button"
             onClick={send}
-            className="bg-secondary text-surface px-6 py-3 rounded-xl font-bold text-[10px] tracking-widest hover:brightness-110 transition-all flex items-center gap-2"
+            className="bg-secondary text-surface px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold text-[10px] tracking-widest hover:brightness-110 transition-all flex items-center gap-2"
           >
             SEND
             <span className="material-symbols-outlined text-sm">send</span>
@@ -225,7 +225,7 @@ export default function Chat({ onBack, onExit }) {
       {/* Right-side vertical nav */}
       <nav
         aria-label="Section navigation"
-        className="fixed right-8 top-1/2 -translate-y-1/2 z-50 glass-nav px-4 py-8 rounded-full flex flex-col items-center gap-8 shadow-2xl"
+        className="fixed right-2 md:right-8 top-1/2 -translate-y-1/2 z-50 glass-nav px-2 md:px-4 py-4 md:py-8 rounded-full flex flex-col items-center gap-4 md:gap-8 shadow-2xl"
       >
         {NAV.map((item, i) => {
           const isActive = item.id === "contact";
@@ -235,7 +235,7 @@ export default function Chat({ onBack, onExit }) {
               type="button"
               onClick={() => onExit(i)}
               aria-current={isActive ? "true" : undefined}
-              className={`relative nav-item text-[10px] tracking-widest px-4 py-2 transition-all ${
+              className={`relative nav-item text-[9px] md:text-[10px] tracking-widest px-2 md:px-4 py-1 md:py-2 transition-all whitespace-nowrap ${
                 isActive
                   ? "text-secondary font-bold border border-secondary"
                   : "text-on-surface-variant hover:text-secondary"
@@ -243,7 +243,7 @@ export default function Chat({ onBack, onExit }) {
             >
               {item.label}
               {isActive && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-secondary rounded-full shadow-[0_0_5px_#3cd7ff]" />
+                <span className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 w-1.5 h-1.5 md:w-2 md:h-2 bg-secondary rounded-full shadow-[0_0_5px_#3cd7ff]" />
               )}
             </button>
           );

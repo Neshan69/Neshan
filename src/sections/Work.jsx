@@ -41,11 +41,11 @@ export default function Work({ active }) {
         active ? "active" : ""
       }`}
     >
-      <Reveal className="w-full flex flex-col px-8 md:px-32">
+      <Reveal className="w-full flex flex-col px-6 md:px-16 lg:px-24">
         <div className="flex justify-between items-end mb-6">
           <div>
             <MicroLabel className="mb-4 block">02 / PORTFOLIO</MicroLabel>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-primary">
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary">
               Selected Work
             </h2>
           </div>

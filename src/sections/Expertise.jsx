@@ -25,13 +25,13 @@ export default function Expertise({ active }) {
     <section
       id="expertise"
       aria-label="Capabilities"
-      className={`section-spread snap-center-force bg-surface/40 backdrop-blur-sm px-8 md:px-32 ${
+      className={`section-spread snap-center-force bg-surface/40 backdrop-blur-sm px-6 md:px-16 lg:px-24 ${
         active ? "active" : ""
       }`}
     >
       <Reveal className="max-w-6xl w-full">
         <MicroLabel className="mb-2 block">01 / CAPABILITIES</MicroLabel>
-        <h2 className="font-display text-4xl md:text-5xl font-bold text-primary mb-8 leading-tight">
+        <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-8 leading-tight">
           Mastering
           <br />
           Complexity

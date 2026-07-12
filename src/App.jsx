@@ -1,9 +1,8 @@
-import { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ShaderBackground from "./components/ShaderBackground";
 import Header from "./components/Header";
 import NavBar from "./components/NavBar";
-import useIsVertical from "./hooks/useIsVertical";
 
 const Expertise = lazy(() => import("./sections/Expertise"));
 const Work = lazy(() => import("./sections/Work"));
@@ -24,42 +23,37 @@ export default function App() {
   const scrollerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(2);
   const indexRef = useRef(2);
-  const isVertical = useIsVertical();
-  const [view, setView] = useState("portfolio"); // "portfolio" | "chat"
-  const pendingIndexRef = useRef(null); // section to land on when returning from chat
+  const [view, setView] = useState("portfolio");
+  const pendingIndexRef = useRef(null);
   const [hasScrolledToHome, setHasScrolledToHome] = useState(false);
 
-  // Callback ref to handle initial scroll
+  const viewport = typeof window !== "undefined" ? window.innerWidth : 1000;
+
   const handleScrollerMount = useCallback((element) => {
     scrollerRef.current = element;
     if (element && !hasScrolledToHome) {
-      // Attempt to scroll to home (index 2) on mount
       setTimeout(() => {
         if (element && element.scrollLeft === 0) {
-          const viewport = isVertical ? window.innerHeight : window.innerWidth;
-          element.scrollTo({ 
+          element.scrollTo({
             left: viewport * 2,
-            behavior: "instant"
+            behavior: "instant",
           });
           setHasScrolledToHome(true);
         }
       }, 150);
     }
-  }, [isVertical, hasScrolledToHome]);
+  }, [hasScrolledToHome, viewport]);
 
   const scrollToSection = useCallback(
     (index, smooth = true) => {
       const scroller = scrollerRef.current;
       if (!scroller) return;
-      const viewport = isVertical ? window.innerHeight : window.innerWidth;
-      const axis = isVertical ? "top" : "left";
-      // Try scrollTo first; if scroll event doesn't fire, manually update state
-      scroller.scrollTo({ 
-        [axis]: viewport * index, 
-        behavior: smooth ? "smooth" : "instant"
+      scroller.scrollTo({
+        left: viewport * index,
+        behavior: smooth ? "smooth" : "instant",
       });
     },
-    [isVertical]
+    [viewport]
   );
 
   useEffect(() => {
@@ -67,27 +61,22 @@ export default function App() {
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
-    // Land on the requested section when returning from chat, else Home (Index 2).
     const targetIndex = pendingIndexRef.current ?? 2;
     pendingIndexRef.current = null;
-    
-    // Update state
+
     indexRef.current = targetIndex;
     setActiveIndex(targetIndex);
-    
-    // Schedule scroll for after DOM settles
+
     const scrollTimer = setTimeout(() => {
       if (!scrollerRef.current) return;
-      const viewport = isVertical ? window.innerHeight : window.innerWidth;
-      const axis = isVertical ? "top" : "left";
-      scrollerRef.current.scrollTo({ 
-        [axis]: viewport * targetIndex, 
-        behavior: "instant"
+      scrollerRef.current.scrollTo({
+        left: viewport * targetIndex,
+        behavior: "instant",
       });
     }, 100);
-    
+
     return () => clearTimeout(scrollTimer);
-  }, [view, isVertical]);
+  }, [view, viewport]);
 
   useEffect(() => {
     if (view !== "portfolio") return;
@@ -99,9 +88,7 @@ export default function App() {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const viewport = isVertical ? window.innerHeight : window.innerWidth;
-        // Use scrollLeft for horizontal, scrollTop for vertical
-        const scrollPos = isVertical ? scroller.scrollTop : scroller.scrollLeft;
+        const scrollPos = scroller.scrollLeft;
         const index = Math.round(scrollPos / viewport);
         indexRef.current = index;
         setActiveIndex(index);
@@ -113,37 +100,29 @@ export default function App() {
     return () => {
       scroller.removeEventListener("scroll", onScroll);
     };
-  }, [view, isVertical]);
+  }, [view, viewport]);
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "ArrowRight" && !isVertical && activeIndex < SECTIONS.length - 1) {
+      if (e.key === "ArrowRight" && activeIndex < SECTIONS.length - 1) {
         scrollToSection(activeIndex + 1);
-      } else if (e.key === "ArrowLeft" && !isVertical && activeIndex > 0) {
-        scrollToSection(activeIndex - 1);
-      } else if (e.key === "ArrowDown" && isVertical && activeIndex < SECTIONS.length - 1) {
-        scrollToSection(activeIndex + 1);
-      } else if (e.key === "ArrowUp" && isVertical && activeIndex > 0) {
+      } else if (e.key === "ArrowLeft" && activeIndex > 0) {
         scrollToSection(activeIndex - 1);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [activeIndex, scrollToSection, isVertical]);
+  }, [activeIndex, scrollToSection]);
 
-  // Paginated wheel: advance exactly ONE section per scroll gesture (up/down on
-  // the vertical layout, right/left on the horizontal layout). A short lock
-  // ignores momentum so a single fling can't skip to the end (accessibility.md).
-  // Touch devices keep native scrolling so the experience is never trapped.
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
-    if (view !== "portfolio") return; // don't hijack wheel inside the chat view
+    if (view !== "portfolio") return;
 
     let lockUntil = 0;
     const onWheel = (e) => {
       const verticalIntent = Math.abs(e.deltaY) >= Math.abs(e.deltaX);
-      const delta = isVertical ? e.deltaY : verticalIntent ? e.deltaY : e.deltaX;
+      const delta = verticalIntent ? e.deltaY : e.deltaX;
       if (Math.abs(delta) < 8) return;
       e.preventDefault();
 
@@ -158,7 +137,7 @@ export default function App() {
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
-  }, [view, isVertical, scrollToSection]);
+  }, [view, scrollToSection]);
 
   const openChat = useCallback(() => setView("chat"), []);
   const closeChat = useCallback(() => setView("portfolio"), []);
