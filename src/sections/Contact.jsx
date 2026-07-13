@@ -41,7 +41,7 @@ export default function Contact({ active }) {
               <div className="relative">
                 <label
                   htmlFor="name"
-                  className="text-[10px] font-bold tracking-widest text-on-surface-variant/60 uppercase"
+                  className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase"
                 >
                   Your Name
                 </label>
@@ -49,7 +49,7 @@ export default function Contact({ active }) {
                   id="name"
                   name="name"
                   required
-                  className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display text-primary placeholder:text-outline/30"
+                  className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display text-primary placeholder:text-on-surface-variant/80"
                   placeholder="Alexander Morgan"
                   type="text"
                 />
@@ -57,7 +57,7 @@ export default function Contact({ active }) {
               <div className="relative">
                 <label
                   htmlFor="email"
-                  className="text-[10px] font-bold tracking-widest text-on-surface-variant/60 uppercase"
+                  className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase"
                 >
                   Email Address
                 </label>
@@ -65,7 +65,7 @@ export default function Contact({ active }) {
                   id="email"
                   name="email"
                   required
-                  className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display text-primary placeholder:text-outline/30"
+                  className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display text-primary placeholder:text-on-surface-variant/80"
                   placeholder="alex@studio.com"
                   type="email"
                 />
@@ -74,7 +74,7 @@ export default function Contact({ active }) {
             <div className="relative">
               <label
                 htmlFor="inquiry"
-                className="text-[10px] font-bold tracking-widest text-on-surface-variant/60 uppercase"
+                className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase"
               >
                 Your Inquiry
               </label>
@@ -82,7 +82,7 @@ export default function Contact({ active }) {
                 id="inquiry"
                 name="inquiry"
                 rows={3}
-                className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display h-24 resize-none text-primary placeholder:text-outline/30"
+                className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display h-24 resize-none text-primary placeholder:text-on-surface-variant/80"
                 placeholder="How can we collaborate?"
               />
             </div>
@@ -99,20 +99,14 @@ export default function Contact({ active }) {
           </form>
         )}
 
-        <div className="mt-12 pt-6 border-t border-outline-variant flex flex-col md:flex-row justify-between text-[10px] font-bold tracking-widest text-on-surface-variant/60">
+        <footer className="mt-12 pt-6 border-t border-outline-variant flex flex-col md:flex-row justify-between text-[10px] font-bold tracking-widest text-on-surface-variant/80">
           <p>© 2024 NESHAN NIROULA</p>
           <div className="flex gap-8 mt-4 md:mt-0">
-            <a className="hover:text-secondary transition-colors" href="#">
-              LINKEDIN
-            </a>
-            <a className="hover:text-secondary transition-colors" href="#">
-              DRIBBBLE
-            </a>
-            <a className="hover:text-secondary transition-colors" href="#">
-              INSTAGRAM
-            </a>
+            <a className="hover:text-secondary transition-colors" href="#">LINKEDIN</a>
+            <a className="hover:text-secondary transition-colors" href="#">DRIBBBLE</a>
+            <a className="hover:text-secondary transition-colors" href="#">INSTAGRAM</a>
           </div>
-        </div>
+        </footer>
       </Reveal>
     </section>
   );

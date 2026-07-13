@@ -23,9 +23,9 @@ export default function ProjectCard({ project }) {
         <p className="text-[10px] font-bold tracking-widest text-secondary mb-2">
           {project.tag}
         </p>
-        <h4 className="font-display text-2xl md:text-3xl font-semibold text-primary">
+        <h3 className="font-display text-2xl md:text-3xl font-semibold text-primary">
           {project.title}
-        </h4>
+        </h3>
       </div>
     </article>
   );

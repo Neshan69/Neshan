@@ -21,6 +21,11 @@ export default function ShaderBackground() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     function draw() {
       if (!running) return;
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -37,6 +42,7 @@ export default function ShaderBackground() {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
       }
+      if (prefersReduced) return;
       raf = requestAnimationFrame(draw);
     }
 
@@ -70,11 +76,15 @@ export default function ShaderBackground() {
       </div>
       <img
         alt=""
+        decoding="async"
+        fetchPriority="low"
         className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-screen pointer-events-none"
         src="https://lh3.googleusercontent.com/aida/AP1WRLsaLWX2cSlhXe-oT3Uo4oL9L-gc-AIjHRo4zzI3zeLsbe3zGDxtoJXfaLcWkqQ0KArurPLHpKtVpeAk38Ay7LXHTNS8nE5Cp4MR7mMhz4FvzrpR8-HjZ7qK71U0HHDOaUPJpXFiwtnwBdo8zrPlN4Pjsaan5z1VpZU_JG5Mnq0-cPVp07t5P4CjBPGa9bOGjhxAluI-1mYZUWi7lW_g2HaGjrJlyAO9HOujChU2SPxGsvvznKijVyZT7w"
       />
       <img
         alt=""
+        decoding="async"
+        fetchPriority="low"
         className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
         src="https://lh3.googleusercontent.com/aida/AP1WRLsaLWX2cSlhXe-oT3Uo4oL9L-gc-AIjHRo4zzI3zeLsbe3zGDxtoJXfaLcWkqQ0KArurPLHpKtVpeAk38Ay7LXHTNS8nE5Cp4MR7mMhz4FvzrpR8-HjZ7qK71U0HHDOaUPJpXFiwtnwBdo8zrPlN4Pjsaan5z1VpZU_JG5Mnq0-cPVp07t5P4CjBPGa9bOGjhxAluI-1mYZUWi7lW_g2HaGjrJlyAO9HOujChU2SPxGsvvznKijVyZT7w"
       />

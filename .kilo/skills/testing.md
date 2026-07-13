@@ -25,4 +25,4 @@
 - [ ] Bug fix has a regression test.
 - [ ] `lint` + `build` pass in CI.
 
-**References:** See backend-roadmap.md · deployment.md · debugging.md · quality-checklist.md.
+**References:** See backend-roadmap.md · deployment.md · debugging-framework.md · quality-gates.md.

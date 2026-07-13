@@ -8,7 +8,7 @@
   2) Locate/reuse: check skills + existing components before writing (component-rules.md).
   3) Design minimally; add an ADR for non-trivial choices (decision-making.md, documentation.md).
   4) Implement with tokens/Tailwind, accessible + responsive (design-system.md, accessibility.md).
-  5) Self-review via quality-checklist.md; add tests if logic (testing.md).
+   5) Self-review via quality-gates.md; add tests if logic changed (testing.md).
   6) Update CONTEXT.md; open MR per git-workflow.md.
 
 **Do**
@@ -22,6 +22,6 @@
 **Checklist**
 - [ ] Intent + roadmap tie clear; reuse checked.
 - [ ] Tokens/a11y/responsive honored; ADR if needed.
-- [ ] quality-checklist.md passed; CONTEXT.md updated; MR opened.
+- [ ] quality-gates.md passed; CONTEXT.md updated; MR opened.
 
-**References:** See project-roadmap.md · component-rules.md · quality-checklist.md · decision-making.md · git-workflow.md.
+**References:** See project-roadmap.md · component-rules.md · quality-gates.md · decision-making.md · git-workflow.md.

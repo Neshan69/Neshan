@@ -1,15 +1,15 @@
 # scope-guardian.md
 
-**Purpose:** Prevent scope creep, accidental refactoring, and unauthorized changes.
-**When to use:** Before every edit, during every task.
+**Purpose:** Prevent scope creep, accidental refactoring, and unauthorized changes. This is a hard boundary, not a suggestion.
+**When to use:** Before every edit, during every task, after every change.
 
 ## Golden Rule
 
 The requested task is the ONLY task.
 
-If a file or change is not required for the requested task, do not touch it.
+If a file or change is not required for the requested task, do not touch it. No exceptions.
 
-## Hard Boundaries (MUST NEVER Cross)
+## Absolute Prohibitions (MUST NEVER)
 
 Unless explicitly instructed by the user, never:
 
@@ -25,15 +25,20 @@ Unless explicitly instructed by the user, never:
 10. Touch configuration files (`package.json`, `vite.config.js`, `tailwind.config.js`, etc.) unless instructed.
 11. Modify `package.json` unless instructed.
 12. Move files to different directories.
-13. Change the architecture unless instructed.
+13. Change architecture unless instructed.
 14. Introduce new dependencies.
+15. Create parallel implementations of existing logic.
+16. Duplicate existing utilities or components.
+17. Add new files unless explicitly required for the requested task.
+18. Add console.log statements (except temporary debugging logs that are explicitly tracked for removal).
 
 ## Scope Lock Procedure
 
 Before editing any file, explicitly state:
 
 1. Files to modify
-2. Reason for each file
+2. Exact reason for each file
+3. What will NOT be changed in each file
 
 If during execution another file becomes necessary:
 
@@ -47,7 +52,7 @@ Only the following are allowed without explicit additional instruction:
 
 - Fixing the specific bug or implementing the specific feature requested.
 - Making layout/overflow/spacing changes when explicitly requested.
-- Updating documentation files that are directly related to the change.
+- Updating documentation files directly related to the change.
 - Updating `CONTEXT.md` when architectural changes occur.
 
 ## Scope Drift Detection
@@ -60,11 +65,30 @@ If you catch yourself about to:
 
 Stop immediately. Re-read the original request. Ask the user if the additional change is desired.
 
-## Related Skills
+## Pre-Edit Checkpoint
+
+Before every file edit, verify:
+
+- [ ] This file was listed in the scope-lock plan.
+- [ ] Every change in this file is directly required by the user's request.
+- [ ] No unrelated code will be touched.
+- [ ] No configuration files will be modified unless instructed.
+- [ ] No dependencies will be added/changed unless instructed.
+
+## Post-Edit Verification
+
+After every file edit:
+
+- [ ] Only the planned lines were changed.
+- [ ] No unintended modifications were made.
+- [ ] The change is scoped to the original request.
+
+## Integration
 
 - `editing-strategy.md` — how to make minimal changes
 - `completion-rules.md` — when to stop
 - `workflow.md` — task lifecycle
+- `architecture.md` — protect architecture
 
 ## Checklist
 
@@ -72,3 +96,5 @@ Stop immediately. Re-read the original request. Ask the user if the additional c
 - [ ] No unrelated code will be touched.
 - [ ] No configuration files will be modified unless instructed.
 - [ ] No dependencies will be added/changed unless instructed.
+- [ ] No parallel implementations created.
+- [ ] No existing functionality duplicated.

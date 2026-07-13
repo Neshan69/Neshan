@@ -1,96 +1,75 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+import { useAuth } from "../contexts/AuthContext";
+import { chatService } from "../services/chat.service";
+import { notificationService } from "../services/notification.service";
+import ChatBubble from "../components/ChatBubble";
 
 const NAV = [
-  { id: "expertise", label: "EXPERTISE" },
-  { id: "work", label: "WORK" },
-  { id: "home", label: "HOME" },
-  { id: "about", label: "ABOUT" },
-  { id: "contact", label: "CONTACT" },
+  { label: "EXPERTISE", index: 0 },
+  { label: "WORK", index: 1 },
+  { label: "HOME", index: 2 },
+  { label: "ABOUT", index: 3 },
+  { label: "PROFILE", index: 4 },
+  { label: "CONTACT", index: 5 },
 ];
-
-const INITIAL_MESSAGES = [
-  {
-    id: "m1",
-    role: "admin",
-    time: "10:42 AM",
-    text: "Hello there! I'm glad you reached out. I'm currently architecting some new logic, but I'd love to hear what's on your mind.",
-  },
-  {
-    id: "m2",
-    role: "admin",
-    time: "10:42 AM",
-    text: "What kind of digital experience are we looking to build today?",
-  },
-  {
-    id: "m3",
-    role: "user",
-    time: "10:43 AM",
-    text: "I've been following your work on \"Ether Reality OS\". I'm looking for someone to help us bridge the gap between our security infrastructure and a more editorial user interface.",
-  },
-];
-
-const AUTO_REPLY =
-  "Love it. That intersection of security and editorial UI is exactly where I do my best work. Let's set up a call to map the logic together.";
-
-function Bubble({ message }) {
-  const prefersReduced = usePrefersReducedMotion();
-  const systemReduced = useReducedMotion();
-  const reduced = prefersReduced || systemReduced;
-  const isUser = message.role === "user";
-
-  return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`flex flex-col gap-2 max-w-[85%] ${
-        isUser ? "items-end ml-auto" : ""
-      }`}
-    >
-      <div className="flex items-center gap-2 mb-1">
-        {isUser ? (
-          <>
-            <span className="text-[9px] text-on-surface-variant/50">
-              {message.time}
-            </span>
-            <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
-              Prospect
-            </span>
-          </>
-        ) : (
-          <>
-            <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
-              Neshan
-            </span>
-            <span className="text-[9px] text-on-surface-variant/50">
-              {message.time}
-            </span>
-          </>
-        )}
-      </div>
-      <div
-        className={`rounded-2xl p-5 leading-relaxed ${
-          isUser
-            ? "chat-bubble-user rounded-tr-none text-primary shadow-[0_0_20px_rgba(60,215,255,0.05)]"
-            : "chat-bubble-admin rounded-tl-none text-on-surface-variant"
-        }`}
-      >
-        {message.text}
-      </div>
-    </motion.div>
-  );
-}
 
 export default function Chat({ onBack, onExit }) {
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
-  const [typing, setTyping] = useState(false);
+  const { user } = useAuth();
+  const [messages, setMessages] = useState([]);
+  const [conversationId, setConversationId] = useState(null);
   const [draft, setDraft] = useState("");
+  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const containerRef = useRef(null);
-  const replyTimer = useRef(null);
+  const [adminId, setAdminId] = useState(null);
 
-  // Keep the latest message in view the moment it is added (or typing starts).
+  // Fetch admin user ID once
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      const { data } = await chatService.getAdmin();
+      if (data) setAdminId(data.id);
+    };
+    fetchAdmin();
+  }, []);
+
+  // Load or create conversation once user + admin are known
+  useEffect(() => {
+    if (!user || !adminId) return;
+
+    const setupConversation = async () => {
+      setLoading(true);
+      setError("");
+
+      const { data: existing } = await chatService.getUserConversations(user.id);
+      let conv = existing?.[0];
+
+      if (!conv) {
+        const { data: newConv, error: createError } = await chatService.createConversation(
+          user.id,
+          [adminId]
+        );
+        if (createError || !newConv) {
+          setError("Failed to create conversation.");
+          setLoading(false);
+          return;
+        }
+        conv = newConv;
+      }
+
+      if (conv) {
+        setConversationId(conv.id);
+        const { data: msgs } = await chatService.getMessages(conv.id);
+        setMessages(msgs || []);
+      }
+
+      setLoading(false);
+    };
+
+    setupConversation();
+  }, [user, adminId]);
+
+  // Scroll to bottom when messages change
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -98,34 +77,36 @@ export default function Chat({ onBack, onExit }) {
       el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
     });
     return () => cancelAnimationFrame(id);
-  }, [messages, typing]);
+  }, [messages]);
 
-  // Cancel a pending auto-reply if the user leaves the chat mid-conversation.
-  useEffect(
-    () => () => {
-      if (replyTimer.current) clearTimeout(replyTimer.current);
-    },
-    []
-  );
-
-  // `send` is the extension point for a future real backend (api-design.md):
-  // swap the simulated reply for a POST to the chat API and stream the response.
-  const send = () => {
+  const send = async () => {
     const text = draft.trim();
-    if (!text) return;
-    setMessages((prev) => [
-      ...prev,
-      { id: `u${Date.now()}`, role: "user", time: "Just now", text },
-    ]);
+    if (!text || !conversationId || sending) return;
+    if (text.length > 2000) {
+      setError("Message must be under 2000 characters.");
+      return;
+    }
+
+    setSending(true);
+    setError("");
+
+    const { data, error: sendError } = await chatService.sendMessage(
+      conversationId,
+      user.id,
+      text
+    );
+
+    if (sendError) {
+      setError("Failed to send message.");
+    } else if (data) {
+      setMessages((prev) => [...prev, data]);
+      if (adminId) {
+        await notificationService.createNotification(adminId, data.id, "new_message");
+      }
+    }
+
     setDraft("");
-    setTyping(true);
-    replyTimer.current = window.setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { id: `a${Date.now()}`, role: "admin", time: "Just now", text: AUTO_REPLY },
-      ]);
-      setTyping(false);
-    }, 1200);
+    setSending(false);
   };
 
   return (
@@ -167,28 +148,19 @@ export default function Chat({ onBack, onExit }) {
         className="flex-1 overflow-y-auto chat-container space-y-8 pr-2 pt-32 pb-32 px-6 md:pr-24 max-w-3xl mx-auto w-full"
       >
         <div className="flex justify-center">
-          <span className="text-[10px] font-bold tracking-[0.2em] text-on-surface-variant/40 uppercase">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-on-surface-variant/80 uppercase">
             Today
           </span>
         </div>
 
-        {messages.map((m) => (
-          <Bubble key={m.id} message={m} />
-        ))}
-
-        {typing && (
-          <div className="flex flex-col gap-2 max-w-[85%]">
-            <div className="flex items-center gap-3 py-2 px-4 bg-white/5 rounded-full w-fit border border-white/5">
-              <div className="flex gap-1">
-                <span className="typing-dot" />
-                <span className="typing-dot" />
-                <span className="typing-dot" />
-              </div>
-              <span className="text-[10px] font-medium text-on-surface-variant uppercase tracking-widest">
-                Neshan is typing
-              </span>
-            </div>
-          </div>
+        {loading ? (
+          <div className="text-center text-on-surface-variant py-8">Loading messages...</div>
+        ) : error ? (
+          <div className="text-center text-error py-8">{error}</div>
+        ) : (
+          messages.map((m) => (
+            <ChatBubble key={m.id} message={m} isUser={m.sender_id === user.id} />
+          ))
         )}
       </main>
 
@@ -200,24 +172,27 @@ export default function Chat({ onBack, onExit }) {
             aria-label="Add attachment"
             className="p-2 md:p-3 text-on-surface-variant hover:text-secondary transition-colors"
           >
-            <span className="material-symbols-outlined">add_circle</span>
+            <span className="material-symbols-outlined" aria-hidden="true">add_circle</span>
           </button>
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
-            className="flex-1 bg-transparent border-none focus:ring-0 text-primary placeholder:text-on-surface-variant/40 py-2 md:py-3 outline-none text-sm md:text-base"
+            maxLength={2000}
+            className="flex-1 bg-transparent border-none focus:ring-0 text-primary placeholder:text-on-surface-variant/80 py-2 md:py-3 outline-none text-sm md:text-base"
             placeholder="Describe your vision..."
             type="text"
             aria-label="Message"
           />
+          <span className="text-[9px] text-on-surface-variant/80 mr-2">{draft.length}/2000</span>
           <button
             type="button"
             onClick={send}
-            className="bg-secondary text-surface px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold text-[10px] tracking-widest hover:brightness-110 transition-all flex items-center gap-2"
+            disabled={sending}
+            className="bg-secondary text-surface px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold text-[10px] tracking-widest hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
           >
             SEND
-            <span className="material-symbols-outlined text-sm">send</span>
+            <span className="material-symbols-outlined text-sm" aria-hidden="true">send</span>
           </button>
         </div>
       </div>
@@ -227,13 +202,13 @@ export default function Chat({ onBack, onExit }) {
         aria-label="Section navigation"
         className="fixed right-2 md:right-8 top-1/2 -translate-y-1/2 z-50 glass-nav px-2 md:px-4 py-4 md:py-8 rounded-full flex flex-col items-center gap-4 md:gap-8 shadow-2xl"
       >
-        {NAV.map((item, i) => {
-          const isActive = item.id === "contact";
+        {NAV.map((item) => {
+          const isActive = item.label === "CONTACT";
           return (
             <button
-              key={item.id}
+              key={item.label}
               type="button"
-              onClick={() => onExit(i)}
+              onClick={() => onExit(item.index)}
               aria-current={isActive ? "true" : undefined}
               className={`relative nav-item text-[9px] md:text-[10px] tracking-widest px-2 md:px-4 py-1 md:py-2 transition-all whitespace-nowrap ${
                 isActive

@@ -1,11 +1,11 @@
 # ui-development.md
 
-**Purpose:** Preserve the existing design language and visual consistency.
+**Purpose:** Preserve the existing design language and visual consistency. Prevent accidental redesign.
 **When to use:** Any task that touches UI, components, styles, or layouts.
 
 ## Core Principle
 
-Never accidentally redesign. Preserve, reuse, and minimally adjust.
+Never accidentally redesign. Preserve, reuse, and minimally adjust. If the change is not explicitly requested, it does not happen.
 
 ## What Must Be Preserved
 
@@ -50,6 +50,7 @@ When a UI change is explicitly requested:
 - Never replace layouts.
 - Never redesign sections.
 - Never change animations unless asked.
+- Never introduce new visual patterns without ADR.
 
 ## Prohibited UI Actions
 
@@ -62,6 +63,7 @@ Unless explicitly instructed:
 - Do not change the horizontal scroll behavior.
 - Do not change the color palette.
 - Do not change the font stack.
+- Do not change the spacing scale.
 
 ## Component Editing Rules
 
@@ -70,6 +72,15 @@ Unless explicitly instructed:
 - Do not introduce unnecessary state.
 - Do not introduce unnecessary hooks.
 - Do not rename components without instruction.
+
+## Visual Review Procedure
+
+After every UI edit:
+
+1. Compare the changed area to the original at each viewport (375px, 768px, 1440px).
+2. Verify the change is limited to what was requested.
+3. Verify no adjacent elements were unintentionally affected.
+4. Verify animations and transitions still work.
 
 ## Integration
 
@@ -90,3 +101,4 @@ Unless explicitly instructed:
 - [ ] Responsiveness preserved.
 - [ ] No accidental redesign.
 - [ ] No new patterns introduced.
+- [ ] Visual review completed at all breakpoints.

@@ -4,7 +4,7 @@
 **When to use:** Before marking work done or merging.
 
 **Rules**
-- Run `npm run lint` and `npm run build`; both must pass (quality-checklist.md).
+- Run `npm run lint` and `npm run build`; both must pass (`quality-gates.md`).
 - Verify against design-system.md and design-principles.md (tokens, fonts, accent).
 - Check reuse: no duplicated component/CSS/logic (component-rules.md, tailwind-guidelines.md).
 - Confirm accessibility.md basics (landmarks, labels, alt, reduced-motion).
@@ -26,4 +26,4 @@
 - [ ] A11y + perf considered; no unjustified deps.
 - [ ] Docs/ADR updated if needed.
 
-**References:** See quality-checklist.md · design-system.md · accessibility.md · dependency-management.md · documentation.md.
+**References:** See quality-gates.md · design-system.md · accessibility.md · dependency-management.md · documentation.md.

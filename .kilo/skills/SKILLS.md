@@ -1,80 +1,105 @@
 # SKILLS.md — Skill System Map
 
 Read this first. Each skill is a small, focused, cross-referenced file. Do NOT
-memorize all of them — open the one matching your current task. All paths are
+memorize all of them — open the skill(s) matching your current task. All paths are
 relative to `.kilo/skills/`.
 
 ## How to use
-1. Identify the task domain (UI, backend, debug, verification, scope…).
+1. Identify the task domain (workflow, debug, verify, UI, React, scope…).
 2. Open the matching skill below.
 3. Follow its Rules/Do/Don't/Checklist exactly.
 4. Follow its `References` for deeper context.
 
-## Core Operational Skills (always loaded)
-- `ai-agent-rules.md` — permanent operating rules, scope lock, minimal changes
-- `workflow.md` — task lifecycle: context → analysis → planning → execution → review → verification → completion
-- `prompt-analysis.md` — rewrite request, objectives, constraints, assumptions, risks, files
-- `scope-guardian.md` — prevent scope creep, unauthorized changes, and refactoring
-- `editing-strategy.md` — smallest safe change, reuse, deterministic edits
-- `self-review.md` — 8-point quality gate before declaring done
-- `completion-rules.md` — when to stop, output standard
+## Execution Flow (mandatory order)
 
-## Domain Skills (load as needed)
-- `debugging.md` — scientific 7-step debugging, evidence-based, never guess
-- `verification.md` — comprehensive verification (build, lint, UI, responsive, imports, exports, accessibility, etc.)
+For every task, follow this order:
+
+1. `workflow.md` — task lifecycle: context → analysis → planning → execution → quality gates → completion
+2. `prompt-analysis.md` — 9-point analysis before any code
+3. `scope-guardian.md` — lock scope before editing
+4. `editing-strategy.md` — smallest safe change methodology
+5. `architecture.md` — protect existing architecture
+6. Domain skill (UI, React, Debugging, etc.)
+7. `quality-gates.md` — final review gate + output standard
+
+## Core Skills (mandatory for every task)
+
+- `workflow.md` — production-grade task lifecycle with scope lock and confidence scoring
+- `prompt-analysis.md` — 9-point request analysis with internal confirmation gate
+- `scope-guardian.md` — absolute scope boundaries; never cross without explicit instruction
+- `editing-strategy.md` — deterministic, minimal, reviewable edits
+- `debugging-framework.md` — scientific 7-step debugging with evidence-based confidence scoring
+- `verification.md` — comprehensive verification (18 categories)
+- `quality-gates.md` — unified self-review + verification + completion + output standard
+- `completion-rules.md` — strict stop discipline; when to declare done and produce output
+- `architecture.md` — architecture protection and pattern preservation
 - `ui-development.md` — preserve design language, spacing, hierarchy, animations, responsiveness
 - `react-development.md` — components, hooks, props, state, performance, folder organization
-- `architecture.md` — runtime structure, data flow, architecture protection
+
+## Domain Skills (load as needed)
+
+- `component-rules.md` — component best practices
+- `hooks.md` — hook-specific rules
+- `state-management.md` — state patterns
+- `forms.md` — form patterns and validation
+- `routing.md` — React Router migration (future)
 - `testing.md` — test strategy (future)
 - `performance.md` — performance optimization
 - `accessibility.md` — a11y requirements
+- `security.md` — security standards
+- `logging.md` — logging discipline
+- `error-handling.md` — consistent error handling
+- `design-system.md` — visual language, tokens, palettes
+- `tailwind-guidelines.md` — Tailwind conventions
+- `animation-guidelines.md` — animation standards
+- `responsive-design.md` — responsive behavior
+- `asset-management.md` — image and asset handling
 
 ## Planning & Decision Skills
+
 - `task-prioritization.md` — what to do next, in what order
 - `decision-making.md` — how to make and record technical decisions
 - `project-roadmap.md` — roadmap tie and sequencing
 - `feature-development.md` — end-to-end feature delivery flow
 
-## Quality & Ops Skills
-- `quality-checklist.md` — universal quality gate (legacy; prefer `verification.md`)
-- `code-review.md` — PR/self-review checklist (legacy; prefer `self-review.md`)
-- `release-checklist.md` — go-live gate
-- `error-handling.md` — consistent, safe error handling
-- `logging.md` — logging discipline
-- `dependency-management.md` — dependency rules
+## Git & Deployment Skills
+
+- `git-workflow.md` — branch, commit, MR standards
+- `deployment.md` — deployment process
 
 ## Context & Memory Skills
+
 - `context-loading.md` — exact files to read at session start
 - `repository-context.md` — indexed cached repo understanding
 - `memory.md` — project memory management
 - `documentation.md` — docs and ADR standards
 - `token-efficiency.md` — reduce output tokens
+- `PROJECT.md` — vision, stack, design language
+- `CONTEXT.md` — current implementation status
 
-## Git & Deployment Skills
-- `git-workflow.md` — branch, commit, MR standards
-- `deployment.md` — deployment process
+## Legacy / Archived Skills
 
-## Future / Roadmap Skills
-- `backend-roadmap.md` — backend architecture plan
-- `api-design.md` — REST API design
-- `database-design.md` — database schema design
-- `authentication.md` — auth flow
-- `security.md` — security standards
-- `routing.md` — React Router migration (future)
+Legacy skills consolidated into current architecture are archived in `.kilo/skills/archive/`:
+- `verification-checklist.md` → superseded by `verification.md`
+- `quality-checklist.md` → superseded by `quality-gates.md`
+- `completion-checklist.md` → superseded by `quality-gates.md`
+- `debug-framework.md` → superseded by `debugging-framework.md`
+- `self-healing.md` → superseded by `workflow.md` + `debugging-framework.md`
+- `root-cause-analysis.md` → superseded by `debugging-framework.md`
+- `safe-refactoring.md` → superseded by `editing-strategy.md`
 
-## Design System Skills
-- `design-system.md` — visual language, tokens, palettes
-- `design-principles.md` — design philosophy
-- `tailwind-guidelines.md` — Tailwind conventions
-- `layout-system.md` — layout patterns
-- `animation-guidelines.md` — animation standards
-- `responsive-design.md` — responsive behavior
-- `forms.md` — form patterns
+These are kept for historical reference only. Do not reference them for current work.
 
 ## Cross-cutting rules
+
 - Keep skills small and non-duplicative; always `See <skill>.md` instead of repeating.
 - Update CONTEXT.md after meaningful change; add an ADR to DECISIONS.md for any architectural decision.
 - Never introduce a dependency without justification (dependency-management.md).
-- When debugging, use `debugging.md` as the primary guide. Legacy `debug-framework.md`, `self-healing.md`, and `root-cause-analysis.md` are superseded by `debugging.md`.
-- When verifying, use `verification.md` as the primary guide. Legacy `verification-checklist.md`, `quality-checklist.md`, and `completion-checklist.md` are superseded by `verification.md` and `completion-rules.md`.
-- When editing, use `editing-strategy.md`. Legacy `safe-refactoring.md` is superseded by `editing-strategy.md`.
+- Every task must pass quality-gates.md before declaring complete.
+- Every debugging iteration follows debugging-framework.md 7-step loop.
+- Do not modify files outside the defined scope (scope-guardian.md).
+- Always read the relevant skill before acting; never rely on general knowledge alone.
+
+## References
+
+See `workflow.md` · `prompt-analysis.md` · `scope-guardian.md` · `editing-strategy.md` · `architecture.md` · `verification.md` · `debugging-framework.md` · `quality-gates.md` · `completion-rules.md` · `ui-development.md` · `react-development.md`.

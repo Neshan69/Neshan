@@ -21,8 +21,7 @@
 - Don't skip CI because "it builds locally".
 
 **Checklist**
-- [ ] quality-checklist.md + completion-checklist.md passed.
-- [ ] SEO + assets + env + CI + monitoring verified.
+- [ ] quality-gates.md passed; assets + SEO + CI + monitoring verified.
 - [ ] Deployed URL smoke-tested.
 
-**References:** See deployment.md · seo.md · security.md · quality-checklist.md · completion-checklist.md.
+**References:** See deployment.md · seo.md · security.md · quality-gates.md · completion-rules.md.

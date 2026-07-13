@@ -9,7 +9,7 @@
   branch off `portfolio` (e.g., `feat/cms`, `fix/title-meta`).
 - Commit: imperative, scoped, concise (`fix: set branded title + meta`, `feat: add Prisma schema`).
 - Keep commits focused; don't mix unrelated changes.
-- PR/MR description references the checklist used (completion-checklist.md).
+- PR/MR description references the quality gate used (`quality-gates.md`).
 - Don't commit `node_modules`, `dist`, `.env` (gitignored). Don't force-push `main`.
 
 **Do**
@@ -22,7 +22,7 @@
 
 **Checklist**
 - [ ] Branch `portfolio`/feature; commit scoped + imperative.
-- [ ] MR to `main`; description cites completion-checklist.md.
+- [ ] MR to `main`; description cites quality-gates.md.
 - [ ] No secrets/build artifacts committed.
 
-**References:** See completion-checklist.md · decision-making.md · project-roadmap.md · security.md.
+**References:** See quality-gates.md · decision-making.md · project-roadmap.md · security.md.

@@ -12,7 +12,7 @@
       content="Neshan Niroula — UI/UX Designer &amp; Systems Architect. Editorial aesthetics, precision systems, and high-impact digital experiences spanning design, frontend, and security."
     />
     <meta name="author" content="Neshan Niroula" />
-    <link rel="canonical" href="https://neshanniroula.example/" />
+    <link rel="canonical" href="https://neshanniroula.com/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -22,8 +22,8 @@
       property="og:description"
       content="UI/UX Designer &amp; Systems Architect specializing in editorial aesthetics, precision systems, and high-impact digital experiences."
     />
-    <meta property="og:url" content="https://neshanniroula.example/" />
-    <meta property="og:image" content="https://neshanniroula.example/og-image.svg" />
+    <meta property="og:url" content="https://neshanniroula.com/" />
+    <meta property="og:image" content="https://neshanniroula.com/og-image.svg" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -32,28 +32,258 @@
       name="twitter:description"
       content="UI/UX Designer &amp; Systems Architect specializing in editorial aesthetics, precision systems, and high-impact digital experiences."
     />
-    <meta name="twitter:image" content="https://neshanniroula.example/og-image.svg" />
+    <meta name="twitter:image" content="https://neshanniroula.com/og-image.svg" />
 
-    <!-- Fonts -->
+    <!-- Fonts: preconnect + non-render-blocking stylesheet swap (avoids @import round-trip, improves LCP) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@0,400;0,600;0,700;1,400&display=swap"
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@0,400;0,600;0,700;1,400&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@0,400;0,600;0,700;1,400&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      />
+    </noscript>
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
     <!-- JSON-LD structured data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Neshan Niroula",
-        "jobTitle": "UI/UX Designer & Systems Architect",
-        "description": "UI/UX Designer and Systems Architect building secure, architecture-grade digital products at the intersection of design, frontend, and security.",
-        "url": "https://neshanniroula.example/",
-        "knowsAbout": ["UI/UX Design", "Frontend Engineering", "Infrastructure", "Security"],
-        "alumniOf": "Master of Digital Design",
-        "address": { "@type": "PostalAddress", "addressLocality": "Remote / Worldwide" }
-      }
+        <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://neshanniroula.com/#website",
+          "url": "https://neshanniroula.com/",
+          "name": "Neshan Niroula",
+          "description": "UI/UX Designer & Systems Architect specializing in editorial aesthetics, precision systems, and high-impact digital experiences for forward-thinking brands.",
+          "inLanguage": "en-US",
+          "publisher": {
+            "@id": "https://neshanniroula.com/#organization"
+          },
+          "author": {
+            "@id": "https://neshanniroula.com/#person"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://neshanniroula.com/#organization",
+          "name": "Neshan Niroula",
+          "url": "https://neshanniroula.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://neshanniroula.com/favicon.svg",
+            "width": 48,
+            "height": 46
+          },
+          "description": "UI/UX Designer & Systems Architect specializing in editorial aesthetics, precision systems, and high-impact digital experiences for forward-thinking brands.",
+          "founder": {
+            "@id": "https://neshanniroula.com/#person"
+          },
+          "contactPoint": {
+            "@id": "https://neshanniroula.com/#contactpoint"
+          }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://neshanniroula.com/#person",
+          "name": "Neshan Niroula",
+          "givenName": "Neshan",
+          "familyName": "Niroula",
+          "jobTitle": "UI/UX Designer & Systems Architect",
+          "url": "https://neshanniroula.com/",
+          "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuBxBRQzHYlnxt10ZHIlpblZijaSZFkmur-2F0yXzkOCdGjQHK5dVfLpAuXt2xKIJYoHjp0PzT-SV4Tfy4wG-4FqCBAbseN20I4kStJ7Jahf8RmJqJLqJly1ySibnD8l3rjHyFDRYR264xUTHYffXdTSqYpIEN_oYczCqH2dfwBzhGGgBL8tB_8hkf1gZikM6oqxeOj3IG2562n8SrqGF91uM9zbbDjBF50wj6VSMWayJrDKRD_mVNi1iC0723wT3Wji7iIuUY0IC-s",
+          "description": "UI/UX Designer & Systems Architect specializing in editorial aesthetics, precision systems, and high-impact digital experiences for forward-thinking brands.",
+          "knowsAbout": [
+            "UI/UX Design",
+            "Frontend Engineering",
+            "Design Systems",
+            "Web Security",
+            "Systems Architecture"
+          ],
+          "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "Master of Digital Design"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Remote / Worldwide"
+          },
+          "worksFor": {
+            "@id": "https://neshanniroula.com/#organization"
+          }
+        },
+        {
+          "@type": "ContactPoint",
+          "@id": "https://neshanniroula.com/#contactpoint",
+          "contactType": "sales",
+          "url": "https://neshanniroula.com/#contact",
+          "areaServed": "Worldwide",
+          "availableLanguage": "English"
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://neshanniroula.com/#webpage",
+          "url": "https://neshanniroula.com/",
+          "name": "Neshan Niroula — Portfolio",
+          "description": "UI/UX Designer & Systems Architect specializing in editorial aesthetics, precision systems, and high-impact digital experiences for forward-thinking brands.",
+          "inLanguage": "en-US",
+          "isPartOf": {
+            "@id": "https://neshanniroula.com/#website"
+          },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://neshanniroula.com/og-image.svg",
+            "width": 1200,
+            "height": 630
+          },
+          "breadcrumb": {
+            "@id": "https://neshanniroula.com/#breadcrumb"
+          },
+          "dateModified": "2026-07-13",
+          "lastReviewed": "2026-07-13"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://neshanniroula.com/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://neshanniroula.com/"
+            }
+          ]
+        },
+        {
+          "@type": "Collection",
+          "@id": "https://neshanniroula.com/#portfolio",
+          "name": "Portfolio",
+          "description": "Selected UI/UX and systems design work by Neshan Niroula.",
+          "url": "https://neshanniroula.com/#work",
+          "creator": {
+            "@id": "https://neshanniroula.com/#person"
+          },
+          "hasPart": [
+            {
+              "@id": "https://neshanniroula.com/#project-cyber-ops-interface",
+              "@type": [
+                "SoftwareSourceCode",
+                "CreativeWork"
+              ],
+              "position": 1
+            },
+            {
+              "@id": "https://neshanniroula.com/#project-ether-reality-os",
+              "@type": [
+                "SoftwareSourceCode",
+                "CreativeWork"
+              ],
+              "position": 2
+            },
+            {
+              "@id": "https://neshanniroula.com/#project-monolith-boutique",
+              "@type": [
+                "SoftwareSourceCode",
+                "CreativeWork"
+              ],
+              "position": 3
+            }
+          ]
+        },
+        {
+          "@type": [
+            "SoftwareSourceCode",
+            "CreativeWork"
+          ],
+          "@id": "https://neshanniroula.com/#project-cyber-ops-interface",
+          "position": 1,
+          "name": "Cyber-Ops Interface",
+          "description": "SECURITY OPERATIONS interface design by Neshan Niroula.",
+          "applicationCategory": "SECURITY OPERATIONS",
+          "genre": "SECURITY OPERATIONS",
+          "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuBxi2pMmhLW2d3KEZLHyMP6Sg0rehnnt0TC3bcamaBvbyQtbOrk3TGGq74HUrloSIoOep87I9_-e2MiM-YXiajL0yOnprFP2xYMtD-Tb6s17Zs1WDHnQdeszEsX7oRcDI6HpS3initfp-aPsyB69ZOYVdSIEZv_VZ0bSEKW8flHPYhyUp6lGNBoXi-j-Qe8zsljwza0b19ec4uYe-U7pOLgC3ojxJW21Vt_Hfzo-QLLT887TdQuT0eNxnfnPf-IKE2wK1B0lw1ulEM",
+          "url": "https://neshanniroula.com/#work",
+          "creator": {
+            "@id": "https://neshanniroula.com/#person"
+          },
+          "isPartOf": {
+            "@id": "https://neshanniroula.com/#portfolio"
+          }
+        },
+        {
+          "@type": [
+            "SoftwareSourceCode",
+            "CreativeWork"
+          ],
+          "@id": "https://neshanniroula.com/#project-ether-reality-os",
+          "position": 2,
+          "name": "Ether Reality OS",
+          "description": "SPATIAL UI interface design by Neshan Niroula.",
+          "applicationCategory": "SPATIAL UI",
+          "genre": "SPATIAL UI",
+          "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuA-S-AqMROGdiH3aOwvZ7RkXz3EAUzwBzFIT1VnAuMRPMN039yXEIC2VMIFouJGFDhsdt5MSXYjRg5wje9IjwMiCyJJhFc0m4gzoeAp7YC305YWypxFRy-G11HzQqkHvSO6R7rkK6eFvCnM2TX5blteU_qtm-LuvznhE2ObJ_xbNirw6jxyllJuFoqCFyRiu9x1pKQm0w9K1IePx3ZjSJPH0TXnEcwAEEcWh7bv3OglHLBZ-1bGFe4CtpzjAxgmYDuR6mCEQwmneg",
+          "url": "https://neshanniroula.com/#work",
+          "creator": {
+            "@id": "https://neshanniroula.com/#person"
+          },
+          "isPartOf": {
+            "@id": "https://neshanniroula.com/#portfolio"
+          }
+        },
+        {
+          "@type": [
+            "SoftwareSourceCode",
+            "CreativeWork"
+          ],
+          "@id": "https://neshanniroula.com/#project-monolith-boutique",
+          "position": 3,
+          "name": "Monolith Boutique",
+          "description": "ECOMMERCE interface design by Neshan Niroula.",
+          "applicationCategory": "ECOMMERCE",
+          "genre": "ECOMMERCE",
+          "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuBZQDUNTeD3ytlpajfBVhkw6fBQLB6i4zkwTG0X2ooArO7tPjSpn4KnXSl9WFssJvdX0Fk5FhLIAa43N99d0eBRMsQFdboeSk-ce506ePaif5NwEaidumsK6N2k26G_SlFWgduhgTZYHjjYLmQdQgIqgIPyU7xIqgBVJTXrrOl0PcOqkWTr_Q4K3GvLnA5OxOoxQ5Ns4E6PDQKoBVMwp6w1Yt8BJgErYlLKcTiaWh4-Cc_M0RvahvP2UI_UrgowtWHb3NPgA3DhTFU",
+          "url": "https://neshanniroula.com/#work",
+          "creator": {
+            "@id": "https://neshanniroula.com/#person"
+          },
+          "isPartOf": {
+            "@id": "https://neshanniroula.com/#portfolio"
+          }
+        }
+      ]
+    }
     </script>
   </head>
   <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-secondary focus:text-surface focus:px-4 focus:py-2 focus:rounded-full focus:text-xs focus:font-bold focus:tracking-widest">
+      Skip to main content
+    </a>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

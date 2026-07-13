@@ -27,4 +27,4 @@
 - [ ] Duplication removed; sub-components/hooks extracted.
 - [ ] Lint + build + visual verified.
 
-**References:** See component-rules.md · hooks.md · coding-standards.md · quality-checklist.md.
+**References:** See component-rules.md · hooks.md · coding-standards.md · quality-gates.md.

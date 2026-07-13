@@ -27,7 +27,9 @@ export default function About({ active }) {
            </div>
          </div>
          <div className="md:col-span-7 space-y-6">
-           <MicroLabel className="block" muted={false}>03 / PHILOSOPHY</MicroLabel>
+            <h2>
+              <MicroLabel className="block" muted={false}>03 / PHILOSOPHY</MicroLabel>
+            </h2>
            <blockquote className="font-display text-2xl md:text-3xl italic font-light text-primary border-l-4 border-secondary pl-6 py-2">
              "Design is the logic of the interface; security is the logic of the
              system. I build at the intersection of both."
@@ -46,13 +48,13 @@ export default function About({ active }) {
            </div>
            <div className="flex gap-8 pt-4">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/60 mb-2">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/80 mb-2">
                 Location
               </p>
               <p className="font-semibold text-primary">Remote / Worldwide</p>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/60 mb-2">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/80 mb-2">
                 Education
               </p>
               <p className="font-semibold text-primary">Master of Digital Design</p>

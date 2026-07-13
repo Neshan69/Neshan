@@ -3,53 +3,77 @@ import Reveal from "../components/Reveal";
 import SmartImage from "../components/SmartImage";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
-export default function Home({ active, scrollerRef }) {
+export default function Home({ active, onOpenProfile }) {
   const homeRef = useRef(null);
   const reduced = usePrefersReducedMotion();
 
-  // The code in this component does not change the vertical scroll (up/down),
-  // it only attaches a scroll event to the passed-in `scrollerRef` to do parallax
-  // image transforms based on horizontal scroll progress (rect.left).
-  // Thus, per your instructions, nothing needs to be changed.
-
+  // The page now slides via a CSS transform on the shared track (no native
+  // scroll), so `getBoundingClientRect().left` reflects the live horizontal
+  // position. We drive the parallax per-frame while a slide is in progress.
   useEffect(() => {
     if (reduced) return;
-    const scroller = scrollerRef.current;
     const home = homeRef.current;
-    if (!scroller || !home) return;
+    if (!home) return;
 
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const rect = home.getBoundingClientRect();
-        const offset = (rect.left / window.innerWidth) * 100;
-        const parallaxImages = home.querySelectorAll(".parallax-img");
-        parallaxImages.forEach((img, i) => {
-          const speed = (i + 1) * 0.5;
-          img.style.transform = `translateX(${offset * speed}px) rotate(${
-            i === 0 ? -10 : 15
-          }deg)`;
-        });
-        ticking = false;
+    let rafId = null;
+    let stopped = false;
+
+    const update = () => {
+      const rect = home.getBoundingClientRect();
+      const offset = (rect.left / window.innerWidth) * 100;
+      const parallaxImages = home.querySelectorAll(".parallax-img");
+      parallaxImages.forEach((img, i) => {
+        const speed = (i + 1) * 0.5;
+        img.style.transform = `translateX(${offset * speed}px) rotate(${
+          i === 0 ? -10 : 15
+        }deg)`;
       });
     };
 
-    scroller.addEventListener("scroll", onScroll);
-    onScroll();
-    return () => scroller.removeEventListener("scroll", onScroll);
-  }, [scrollerRef, reduced]);
+    // Animate the parallax for the duration of the slide transition.
+    const animate = (duration = 900) => {
+      if (stopped) return;
+      const start = performance.now();
+      const step = (now) => {
+        if (stopped) return;
+        update();
+        if (now - start < duration) {
+          rafId = requestAnimationFrame(step);
+        }
+      };
+      rafId = requestAnimationFrame(step);
+    };
+
+    update();
+    if (active) animate();
+
+    return () => {
+      stopped = true;
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [active, reduced]);
 
   return (
     <section
       id="home"
       ref={homeRef}
       aria-label="Introduction"
-      className={`section-spread snap-center-force px-8 md:px-16 ${
+      className={`section-spread snap-center-force relative px-8 md:px-16 ${
         active ? "active" : ""
       }`}
     >
+      {active && (
+        <button
+          type="button"
+          onClick={onOpenProfile}
+          aria-label="View profile"
+          className="absolute top-20 right-6 md:right-16 z-30 flex items-center justify-center w-11 h-11 rounded-full glass-nav text-on-surface-variant hover:text-secondary shadow-2xl transition-colors"
+        >
+          <span className="material-symbols-outlined text-xl" aria-hidden="true">
+            person
+          </span>
+        </button>
+      )}
       <Reveal className="relative z-20 text-center max-w-5xl mx-auto px-4">
         <span className="inline-block border border-secondary text-secondary px-4 py-1 text-[10px] font-bold tracking-[0.3em] uppercase mb-6 shadow-[0_0_15px_rgba(60,215,255,0.3)]">
           Systemic Logic v4.0

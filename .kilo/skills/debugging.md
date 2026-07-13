@@ -111,10 +111,11 @@ After identifying a root cause, assign a confidence score:
 
 ## Integration with Other Skills
 
-- Root cause analysis details: `root-cause-analysis.md`
-- Minimal fix application: `safe-refactoring.md`
-- Post-fix verification: `verification.md`
-- Autonomous loop: `self-healing.md`
+- Root cause analysis: `debugging-framework.md`
+- Minimal fix application: `editing-strategy.md`
+- Post-fix verification: `verification.md` → `quality-gates.md`
+- Autonomous loop: `workflow.md`
+- Confidence scoring: `debugging-framework.md`
 - Repository understanding: `repository-context.md`
 
 ## Checklist
@@ -131,4 +132,4 @@ After identifying a root cause, assign a confidence score:
 
 ## References
 
-See `root-cause-analysis.md` · `self-healing.md` · `safe-refactoring.md` · `verification.md` · `debug-framework.md` · `repository-context.md` · `debugging.md` (legacy) · `error-handling.md` · `logging.md`.
+See `debugging-framework.md` · `workflow.md` · `editing-strategy.md` · `verification.md` · `debug-framework.md` (legacy) · `repository-context.md` · `error-handling.md` · `logging.md`.

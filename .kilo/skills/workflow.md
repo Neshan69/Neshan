@@ -1,7 +1,17 @@
 # workflow.md
 
-**Purpose:** The standard agent workflow, start to finish. Ensures reliable, scoped, verified execution.
-**When to use:** Executing any task.
+**Purpose:** Production-grade execution lifecycle. Ensures reliable, scoped, verified, evidence-based execution.
+**When to use:** Executing any task. This is the canonical operating procedure.
+
+## Phase 0: Scope Lock
+
+Before any investigation or file access:
+
+1. Restate the exact request.
+2. Define what will NOT be changed.
+3. Define what "done" looks like.
+
+A task without a locked scope is a task that will runaway. Lock scope first.
 
 ## Phase 1: Context Loading
 
@@ -11,37 +21,43 @@ Load context in this exact order:
 2. `.kilo/CONTEXT.md` — current status, known issues, next steps.
 3. `.kilo/skills/SKILLS.md` — skill map; open the skill(s) matching your task domain.
 4. Relevant skill(s): follow Rules/Do/Don't/Checklist.
-5. Source files only as needed (folder-structure.md).
+5. Source files only as needed (folder-structure.md, architecture.md).
 
 **Rules:**
 - Do not read the whole repo blindly; load by relevance (token-efficiency.md).
 - If the task touches backend/roadmap, also read backend-roadmap.md + dependent skills.
+- Never read files outside the defined scope.
 
 ## Phase 2: Prompt Analysis
 
-Before coding, perform a complete 7-point analysis:
+Before coding, perform a complete 9-point analysis:
 
-1. Original Request — restate the user's exact request.
-2. Objectives — measurable goals.
-3. Constraints — explicit and implicit limits.
-4. Assumptions — what you believe to be true; verify critical ones.
-5. Files Affected — list with reasons.
-6. Risks — regression, performance, accessibility, scope, technical.
-7. Confirmation — summarize understanding; ask if ambiguous.
+1. **Original Request** — restate the user's exact request in your own words.
+2. **Objectives** — measurable goals. What must be true when the task is complete?
+3. **Constraints** — explicit and implicit limits. Technical, design, process, time.
+4. **Assumptions** — what you believe to be true; verify critical ones with evidence.
+5. **Files Affected** — list every file with reason. No exceptions.
+6. **Files NOT Affected** — explicitly list files that will NOT be touched to prevent drift.
+7. **Risks** — regression, performance, accessibility, scope, technical.
+8. **Confidence Level** — assign a percentage to your understanding before proceeding.
+9. **Confirmation** — if confidence < 80%, ask the user before proceeding.
 
 **Tool**: `prompt-analysis.md`
 
+**Rule**: Do not start coding until confidence >= 80% or the task is categorically simple (typo, single-property fix).
+
 ## Phase 3: Planning
 
-1. **Scope Lock**: Define exactly what will be modified and why. State this explicitly.
-2. **Execution Order**: Sequence work so each step is verifiable.
-3. **Dependencies**: Identify what must be done before what.
-4. **Stopping Conditions**: Define what "done" looks like before starting.
+1. **Execution Order**: Sequence work so each step is independently verifiable.
+2. **Dependencies**: Identify what must be done before what.
+3. **Stopping Conditions**: Define what "done" looks like before starting.
+4. **Success Criteria**: Define how you will know when the task is truly complete.
 
 **Rules:**
 - Fix blockers first: broken build, security gaps, lost functionality.
 - Small, shippable increments beat big unfinished rewrites.
 - If unsure about direction, ask the user rather than guess.
+- Mark every step as pending/in-progress/completed using `todowrite`.
 
 **Tool**: `task-prioritization.md`
 
@@ -50,59 +66,40 @@ Before coding, perform a complete 7-point analysis:
 1. Open the relevant domain skill(s) (UI, React, Debugging, etc.).
 2. Apply `editing-strategy.md`: smallest safe change, existing utilities/components.
 3. Apply `scope-guardian.md`: only touch required files.
-4. Make the change.
-5. Verify immediately (verification.md).
+4. Apply `architecture.md`: preserve architecture and patterns.
+5. Make the change.
+6. Verify immediately (verification.md → quality-gates.md).
 
 **Rules:**
 - One reviewable change at a time.
+- If a new file becomes necessary, STOP, explain, and ask permission.
 - Keep the editorial design language intact.
 - Reuse components/tokens; avoid duplicated logic and CSS.
+- Never modify multiple suspected causes simultaneously.
 
-## Phase 5: Self Review
+## Phase 5: Quality Gates
 
-Before declaring done, perform the 8-point self review:
+Before declaring done, run the full quality gates sequence:
 
-1. Architecture Review
-2. Regression Review
-3. Visual Review
-4. Build Review
-5. Import Review
-6. Unused Code Review
-7. Scope Review
-8. Requirement Review
+1. **Self-review** (Gate 1)
+2. **Verification** (Gate 2)
+3. **Completion** (Gate 3)
 
-**Tool**: `self-review.md`
+**Tool**: `quality-gates.md`
 
-## Phase 6: Verification
-
-Run the complete verification checklist:
-
-- `npm run lint` + `npm run build`
-- Manual smoke test at 375px, 768px, 1440px
-- Check browser console + React DevTools
-- Verify all 16 verification categories
-
-**Tool**: `verification.md`
-
-## Phase 7: Completion
-
-If and only if all verification passes and all self reviews pass:
-
-1. Output the standard completion format.
-2. Update `CONTEXT.md` if the change is architectural.
-3. Add an ADR to `DECISIONS.md` for any architectural decision.
-4. Stop. Do not continue improving.
-
-**Tool**: `completion-rules.md`
+**Rules:**
+- All gates must pass.
+- A failed gate requires remediation, not skipping.
+- Only 3 iterations allowed; escalate if unresolved.
 
 ## Stopping Conditions
 
 Stop immediately if:
-
-- The task is complete (Phase 7 criteria met).
+- The task is complete (Phase 5 criteria met).
 - You hit a hard blocker (missing dependency, unclear requirement, permission denied).
-- You have attempted 5 debugging iterations without resolution (debugging.md).
+- You have attempted 5 debugging iterations without resolution (debugging-framework.md).
 - The user asks you to stop.
+- Scope is exceeded (scope-guardian.md violation detected).
 
 ## Scope Control
 
@@ -110,7 +107,7 @@ Stop immediately if:
 - Never perform additional improvements.
 - Never refactor unrelated code.
 - Never reorganize files.
-- Never rename components.
+- Never rename components or files.
 - Never optimize unless explicitly requested.
 - Never "clean up" existing code.
 - Never fix unrelated bugs.
@@ -123,21 +120,23 @@ Stop immediately if:
 - `prompt-analysis.md` — understand before coding
 - `editing-strategy.md` — how to change
 - `scope-guardian.md` — what not to change
-- `self-review.md` — quality gate
+- `architecture.md` — protect the architecture
 - `verification.md` — technical verification
-- `completion-rules.md` — when to stop
+- `quality-gates.md` — unified review gate (self-review + verification + completion)
+- `completion-rules.md` — stop rules
+- `self-review.md` — quality gate (legacy; superseded by quality-gates.md)
 
 ## Checklist
 
-- [ ] Context loaded; scope + roadmap tie clear.
-- [ ] Prompt analyzed; objectives, constraints, assumptions clear.
-- [ ] Planned; execution order + stopping conditions defined.
-- [ ] Reused; implemented per skill; minimal change made.
-- [ ] Self-review passed (all 8 points).
-- [ ] Verification passed (all 16 categories).
-- [ ] Completion rules followed; standard output produced.
+- [ ] Scope locked before investigation.
+- [ ] Context loaded in correct order.
+- [ ] Prompt analyzed with 9-point analysis; confidence >= 80%.
+- [ ] Planned with execution order, dependencies, stopping conditions.
+- [ ] Executed with minimal, scoped changes.
+- [ ] Quality gates passed (all 8 self-review + all 16 verification + completion criterion).
+- [ ] Output standard produced.
 - [ ] Docs/ADR updated if needed; CONTEXT.md bumped if architecture changed.
 
 ## References
 
-See `prompt-analysis.md` · `editing-strategy.md` · `scope-guardian.md` · `self-review.md` · `verification.md` · `completion-rules.md` · `feature-development.md` · `task-prioritization.md` · `decision-making.md` · `quality-checklist.md` · `ai-agent-rules.md`.
+See `prompt-analysis.md` · `scope-guardian.md` · `editing-strategy.md` · `architecture.md` · `verification.md` · `debugging-framework.md` · `quality-gates.md` · `completion-rules.md` · `task-prioritization.md` · `feature-development.md` · `decision-making.md` · `ai-agent-rules.md`.

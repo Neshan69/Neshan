@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
 
-Sitemap: https://lumina-editorial.example/sitemap.xml
+Sitemap: https://neshanniroula.com/sitemap.xml

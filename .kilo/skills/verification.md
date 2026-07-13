@@ -1,25 +1,28 @@
 # verification.md
 
 **Purpose:** Comprehensive verification of every task. Prove a fix is safe before declaring done.
-**When to use:** After every edit, before declaring any task complete.
+**When to use:** After every edit, during Gate 2 of quality-gates.md.
+
+## Principle
+
+Verification is not optional. A task is NOT complete until all categories are verified and documented.
+
+## Verification Execution Order
+
+Run in this order:
+
+1. `npm run lint`
+2. `npm run build`
+3. Manual smoke test at 375px, 768px, 1440px
+4. Check browser console for errors
+5. Check React DevTools for warnings
+6. Verify each category below (document results)
 
 ## Verification Categories
 
 Verify ALL of the following categories. Do not skip any.
 
-### 1. Build
-
-- [ ] `npm run build` succeeds with no errors.
-- [ ] Bundle size is within acceptable limits (review gzip sizes).
-- [ ] No new chunks added unexpectedly.
-
-### 2. Lint
-
-- [ ] `npm run lint` passes with no errors.
-- [ ] No new warnings introduced.
-- [ ] No `no-unused-vars` violations.
-
-### 3. UI / Visual
+### 1. UI / Visual
 
 - [ ] The change matches the existing design language.
 - [ ] No accidental redesign.
@@ -27,7 +30,7 @@ Verify ALL of the following categories. Do not skip any.
 - [ ] Colors match the design system.
 - [ ] Typography scale is preserved.
 
-### 4. Responsiveness
+### 2. Responsiveness
 
 - [ ] Mobile viewport (375px) renders correctly.
 - [ ] Tablet viewport (768px) renders correctly.
@@ -35,27 +38,27 @@ Verify ALL of the following categories. Do not skip any.
 - [ ] No horizontal overflow at any viewport width.
 - [ ] No vertical scroll inside sections (100vh constraint).
 
-### 5. Imports
+### 3. Imports
 
 - [ ] All imports resolve correctly.
 - [ ] No broken import paths.
 - [ ] No circular import risks.
 - [ ] Import order follows project conventions.
 
-### 6. Exports
+### 4. Exports
 
 - [ ] All exported components/functions are still used.
 - [ ] No unused exports added.
 - [ ] Default vs named exports are correct.
 
-### 7. Routing
+### 5. Routing
 
 - [ ] All internal links/hrefs are valid.
 - [ ] No broken navigation.
 - [ ] Anchor targets exist.
 - [ ] Hash links work correctly.
 
-### 8. React Errors
+### 6. React Errors
 
 - [ ] No React key warnings in console.
 - [ ] No missing prop warnings.
@@ -63,11 +66,23 @@ Verify ALL of the following categories. Do not skip any.
 - [ ] No "cannot update a component while rendering" errors.
 - [ ] StrictMode double-invoke behavior is understood and not broken.
 
-### 9. Console
+### 7. Console
 
 - [ ] No `console.log` statements in committed code.
 - [ ] No `console.warn` or `console.error` from the changed code.
 - [ ] No uncaught promise rejections.
+
+### 8. Build
+
+- [ ] `npm run build` succeeds with no errors.
+- [ ] Bundle size is within acceptable limits (review gzip sizes).
+- [ ] No new chunks added unexpectedly.
+
+### 9. Lint
+
+- [ ] `npm run lint` passes with no errors.
+- [ ] No new warnings introduced.
+- [ ] No `no-unused-vars` violations.
 
 ### 10. Runtime
 
@@ -118,30 +133,48 @@ Verify ALL of the following categories. Do not skip any.
 - [ ] All SVGs exist in `public/`.
 - [ ] No hotlinks to resources that may be taken down (prefer local assets).
 
-## Verification Execution
+### 17. Regression Prevention
 
-Run in this order:
+- [ ] Every existing feature manually verified after the change.
+- [ ] Adjacent features tested to ensure no breakage.
+- [ ] Change does not alter behavior of unaffected features.
 
-1. `npm run lint`
-2. `npm run build`
-3. Manual smoke test at 375px, 768px, 1440px.
-4. Check browser console for errors.
-5. Check React DevTools for warnings.
-6. Verify each category above.
+### 18. Scope Compliance
+
+- [ ] Only files listed in the scope-lock were modified.
+- [ ] No configuration files were touched.
+- [ ] No dependencies were changed.
+- [ ] No unrelated bugs were fixed.
+
+## Regression Testing
+
+For every change:
+
+1. Identify adjacent features that could be affected.
+2. Verify each adjacent feature still works.
+3. Document any regressions found.
+4. Fix regressions before proceeding.
 
 ## Integration
 
-- `self-review.md` — quality gate
-- `debugging.md` — fix verification loop
-- `quality-checklist.md` — legacy quality gate
+- `quality-gates.md` — review gate
+- `self-review.md` — quality gate (legacy; superseded by quality-gates.md)
+- `debugging-framework.md` — fix verification loop
+- `quality-checklist.md` — legacy quality gate (archived; use `quality-gates.md`)
 - `completion-rules.md` — completion discipline
 
 ## Checklist
 
-- [ ] All 16 categories verified.
+- [ ] All 18 categories verified.
 - [ ] Build + lint green.
 - [ ] No visual regressions.
 - [ ] No console errors.
 - [ ] No accessibility regressions.
 - [ ] No performance regressions.
 - [ ] No unused code or dead imports.
+- [ ] Adjacent features verified.
+- [ ] Scope compliance verified.
+
+## References
+
+See `ui-development.md` · `react-development.md` · `debugging-framework.md` · `quality-gates.md` · `editing-strategy.md` · `responsive-design.md` · `accessibility.md` · `performance.md`.

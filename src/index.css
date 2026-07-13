@@ -1,6 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@0,400;0,600;0,700;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,26 +19,27 @@ body {
   font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
 }
 
+/* Viewport for the one-page-at-a-time horizontal slider. No native scroll:
+   the inner `.horizontal-track` is translated with a CSS transition. */
 .horizontal-scroller {
-  display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
+  position: relative;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
-.horizontal-scroller::-webkit-scrollbar {
-  display: none;
+.horizontal-track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  will-change: transform;
+  transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .section-spread {
   flex: 0 0 100vw;
   width: 100vw;
   height: 100vh;
-  scroll-snap-align: start;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -66,10 +64,6 @@ body {
   border-radius: 2px;
 }
 
-.snap-center-force {
-  scroll-snap-align: start;
-}
-
 /* Chat ("Let's Talk") page — see src/sections/Chat.jsx */
 .glass-nav {
   backdrop-filter: blur(20px);
@@ -89,7 +83,9 @@ body {
 }
 
 .parallax-img {
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Transform is driven per-frame by JS (see src/sections/Home.jsx), so no
+     CSS transition here — it would lag behind the slider animation. */
+  will-change: transform;
 }
 
 /* Chat ("Let's Talk") page — see src/sections/Chat.jsx */
@@ -175,5 +171,9 @@ body {
 
   .parallax-img {
     transform: none !important;
+  }
+
+  .horizontal-track {
+    transition: none !important;
   }
 }
