@@ -8,7 +8,7 @@ export const notificationService = {
         *,
         message:messages (
           id,
-          content,
+          message,
           conversation_id,
           created_at,
           sender:sender_id (
@@ -49,14 +49,5 @@ export const notificationService = {
       .eq("user_id", userId)
       .eq("read", false);
     return { error };
-  },
-
-  createNotification: async (userId, messageId, type = "new_message") => {
-    const { data, error } = await supabase
-      .from("notifications")
-      .insert([{ user_id: userId, message_id: messageId, type }])
-      .select("*")
-      .single();
-    return { data, error };
   },
 };

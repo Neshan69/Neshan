@@ -104,7 +104,7 @@ export default function NotificationDropdown() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-xs text-primary leading-relaxed">
-                      {n.message?.content || "New message"}
+                      {n.message?.message || n.message?.content || "New message"}
                     </p>
                     {!n.read && (
                       <span className="w-2 h-2 bg-secondary rounded-full mt-1 flex-shrink-0 shadow-[0_0_5px_#3cd7ff]" />

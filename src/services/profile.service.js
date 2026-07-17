@@ -13,7 +13,7 @@ export const profileService = {
   createProfile: async (userId, defaults = {}) => {
     const { data, error } = await supabase
       .from("profiles")
-      .insert([{ id: userId, ...defaults }])
+      .upsert([{ id: userId, ...defaults }])
       .select("*")
       .single();
     return { data, error };

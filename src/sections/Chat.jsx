@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { chatService } from "../services/chat.service";
-import { notificationService } from "../services/notification.service";
+import { supabase } from "../lib/supabase";
 import ChatBubble from "../components/ChatBubble";
 
 const NAV = [
@@ -24,16 +24,21 @@ export default function Chat({ onBack, onExit }) {
   const containerRef = useRef(null);
   const [adminId, setAdminId] = useState(null);
 
-  // Fetch admin user ID once
   useEffect(() => {
     const fetchAdmin = async () => {
-      const { data } = await chatService.getAdmin();
-      if (data) setAdminId(data.id);
+      const { data, error } = await chatService.getAdmin();
+      if (error) {
+        setError("Could not load chat.");
+      } else if (data) {
+        setAdminId(data.id);
+      } else {
+        setError("Messaging is unavailable right now.");
+        setLoading(false);
+      }
     };
     fetchAdmin();
   }, []);
 
-  // Load or create conversation once user + admin are known
   useEffect(() => {
     if (!user || !adminId) return;
 
@@ -47,7 +52,7 @@ export default function Chat({ onBack, onExit }) {
       if (!conv) {
         const { data: newConv, error: createError } = await chatService.createConversation(
           user.id,
-          [adminId]
+          adminId
         );
         if (createError || !newConv) {
           setError("Failed to create conversation.");
@@ -61,6 +66,7 @@ export default function Chat({ onBack, onExit }) {
         setConversationId(conv.id);
         const { data: msgs } = await chatService.getMessages(conv.id);
         setMessages(msgs || []);
+        await chatService.markAsRead(conv.id, user.id);
       }
 
       setLoading(false);
@@ -69,7 +75,43 @@ export default function Chat({ onBack, onExit }) {
     setupConversation();
   }, [user, adminId]);
 
-  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (!conversationId) return;
+
+    const channel = supabase
+      .channel(`messages:${conversationId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        async (payload) => {
+          const { data } = await supabase
+            .from("messages")
+            .select(`
+              *,
+              sender:profiles!messages_sender_id_fkey (id, full_name, email, avatar_url)
+            `)
+            .eq("id", payload.new.id)
+            .single();
+          if (data) {
+            setMessages((prev) => {
+              if (prev.some((m) => m.id === data.id)) return prev;
+              return [...prev, data];
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [conversationId]);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -100,9 +142,6 @@ export default function Chat({ onBack, onExit }) {
       setError("Failed to send message.");
     } else if (data) {
       setMessages((prev) => [...prev, data]);
-      if (adminId) {
-        await notificationService.createNotification(adminId, data.id, "new_message");
-      }
     }
 
     setDraft("");
@@ -111,7 +150,6 @@ export default function Chat({ onBack, onExit }) {
 
   return (
     <div className="relative z-10 flex flex-col h-screen">
-      {/* Page background (matches the chat design reference) */}
       <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
         <div className="absolute inset-0 bg-[#0f1113]" />
         <div className="absolute inset-0 opacity-20 mix-blend-screen">
@@ -124,7 +162,6 @@ export default function Chat({ onBack, onExit }) {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f1113]/80 via-transparent to-[#0f1113]/90" />
       </div>
 
-      {/* Header */}
       <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-16 py-6 md:py-8">
         <button
           type="button"
@@ -142,7 +179,6 @@ export default function Chat({ onBack, onExit }) {
         </div>
       </header>
 
-      {/* Chat thread */}
       <main
         ref={containerRef}
         className="flex-1 overflow-y-auto chat-container space-y-8 pr-2 pt-32 pb-32 px-6 md:pr-24 max-w-3xl mx-auto w-full"
@@ -164,7 +200,6 @@ export default function Chat({ onBack, onExit }) {
         )}
       </main>
 
-      {/* Input bar */}
       <div className="fixed bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 md:px-6 z-50">
         <div className="glass-nav rounded-2xl p-2 flex items-center gap-2 shadow-2xl border border-white/5">
           <button
@@ -197,7 +232,6 @@ export default function Chat({ onBack, onExit }) {
         </div>
       </div>
 
-      {/* Right-side vertical nav */}
       <nav
         aria-label="Section navigation"
         className="fixed right-2 md:right-8 top-1/2 -translate-y-1/2 z-50 glass-nav px-2 md:px-4 py-4 md:py-8 rounded-full flex flex-col items-center gap-4 md:gap-8 shadow-2xl"

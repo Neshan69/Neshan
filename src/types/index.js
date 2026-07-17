@@ -25,7 +25,7 @@
  * @property {ID} id
  * @property {ID} conversation_id
  * @property {ID} sender_id
- * @property {string} content
+ * @property {string} message
  * @property {string} [created_at]
  *
  * @typedef {Object} Notification

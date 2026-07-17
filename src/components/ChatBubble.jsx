@@ -32,10 +32,10 @@ export default function ChatBubble({ message, isUser, showSender = true, variant
                 {message.sender?.full_name || "You"}
               </span>
             </>
-          ) : (
+           ) : (
             <>
               <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
-                Neshan
+                {message.sender?.full_name || "Admin"}
               </span>
               <span className="text-[9px] text-on-surface-variant/80">
                 {formatMessageTime(message.created_at)}
@@ -55,7 +55,7 @@ export default function ChatBubble({ message, isUser, showSender = true, variant
               : "chat-bubble-admin rounded-tl-none text-on-surface-variant"
         }`}
       >
-        {message.content}
+        {message.message ?? message.content}
       </div>
       {variant === "compact" && (
         <span className="text-[9px] text-on-surface-variant/80 px-1">

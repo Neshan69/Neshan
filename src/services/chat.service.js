@@ -6,51 +6,69 @@ export const chatService = {
       .from("profiles")
       .select("*")
       .eq("role", "admin")
-      .single();
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
     return { data, error };
   },
 
-  createConversation: async (creatorId, participantIds) => {
+  createConversation: async (userId, adminId) => {
     const { data, error } = await supabase
       .from("conversations")
-      .insert([{}])
+      .insert([{ user_id: userId, admin_id: adminId, status: "active" }])
       .select("*")
       .single();
-    if (error || !data) return { data, error };
-
-    const uniqueIds = [...new Set([creatorId, ...participantIds])];
-    const rows = uniqueIds.map((uid) => ({
-      conversation_id: data.id,
-      user_id: uid,
-      joined_at: new Date().toISOString(),
-    }));
-
-    const { error: joinError } = await supabase
-      .from("conversation_participants")
-      .insert(rows);
-    if (joinError) {
-      await supabase.from("conversations").delete().eq("id", data.id);
-      return { data: null, error: joinError };
-    }
-
-    return { data, error: null };
+    return { data, error };
   },
 
   getUserConversations: async (userId) => {
     const { data, error } = await supabase
-      .from("conversation_participants")
-      .select(`
-        conversation_id,
-        joined_at,
-        conversation:conversations (
-          id,
-          created_at,
-          updated_at
-        )
-      `)
+      .from("conversations")
+      .select("*")
       .eq("user_id", userId)
-      .order("joined_at", { ascending: false });
+      .order("created_at", { ascending: false });
     return { data, error };
+  },
+
+  getAdminConversations: async (adminId) => {
+    const { data: conversations, error } = await supabase
+      .from("conversations")
+      .select(`
+        *,
+        user:profiles!conversations_user_id_fkey (id, full_name, email, avatar_url),
+        admin:profiles!conversations_admin_id_fkey (id, full_name, email, avatar_url)
+      `)
+      .eq("admin_id", adminId)
+      .order("updated_at", { ascending: false });
+    if (error) return { data: null, error };
+    if (!conversations || conversations.length === 0) return { data: [], error: null };
+
+    const ids = conversations.map((c) => c.id);
+    const { data: messages } = await supabase
+      .from("messages")
+      .select("id, conversation_id, sender_id, message, is_read, created_at")
+      .in("conversation_id", ids)
+      .order("created_at", { ascending: true });
+
+    const byConversation = new Map();
+    for (const m of messages || []) {
+      if (!byConversation.has(m.conversation_id)) {
+        byConversation.set(m.conversation_id, []);
+      }
+      byConversation.get(m.conversation_id).push(m);
+    }
+
+    const data = conversations.map((c) => {
+      const msgs = byConversation.get(c.id) || [];
+      const lastMessage = msgs[msgs.length - 1] || null;
+      const unread = msgs.filter((m) => !m.is_read && m.sender_id !== adminId).length;
+      const lastMessageAt = lastMessage?.created_at || c.updated_at;
+      return { ...c, lastMessage, unread, lastMessageAt };
+    });
+
+    data.sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
+
+    return { data, error: null };
   },
 
   getMessages: async (conversationId) => {
@@ -58,117 +76,62 @@ export const chatService = {
       .from("messages")
       .select(`
         *,
-        sender:profiles!messages_sender_id_fkey (
-          id,
-          full_name,
-          email
-        )
+        sender:profiles!messages_sender_id_fkey (id, full_name, email, avatar_url)
       `)
       .eq("conversation_id", conversationId)
       .order("created_at", { ascending: true });
     return { data, error };
   },
 
-  sendMessage: async (conversationId, senderId, content) => {
-    const { data, error } = await supabase
-      .from("messages")
-      .insert([{ conversation_id: conversationId, sender_id: senderId, content }])
-      .select("*")
-      .single();
-    return { data, error };
-  },
+  sendMessage: async (conversationId, senderId, message) => {
+    const context = {
+      conversation_id: conversationId,
+      sender_id: senderId,
+      authenticated_user: (await supabase.auth.getUser()).data?.user?.id ?? null,
+      message_text: message,
+    };
+    try {
+      const { data, error } = await supabase
+        .from("messages")
+        .insert([{ conversation_id: conversationId, sender_id: senderId, message }])
+        .select("*")
+        .single();
 
-  joinConversation: async (conversationId, userId) => {
-    const { data, error } = await supabase
-      .from("conversation_participants")
-      .insert([{ conversation_id: conversationId, user_id: userId }])
-      .select("*")
-      .single();
-    return { data, error };
-  },
+      if (error) {
+        console.error("[chatService.sendMessage] Supabase insert failed", {
+          ...context,
+          error,
+        });
+        return { data: null, error };
+      }
 
-  getAllConversations: async (adminId) => {
-    const { data, error } = await supabase
-      .from("conversation_participants")
-      .select(`
-        conversation_id,
-        joined_at,
-        last_read_at,
-        conversation:conversations (
-          id,
-          created_at,
-          updated_at
-        )
-      `)
-      .eq("user_id", adminId)
-      .order("joined_at", { ascending: false });
-    if (error || !data) return { data, error };
-
-    const enriched = await Promise.all(
-      data.map(async (row) => {
-        const { data: participants } = await supabase
-          .from("conversation_participants")
-          .select(`
-            user_id,
-            profile:profiles (
-              id,
-              full_name,
-              email,
-              role
-            )
-          `)
-          .eq("conversation_id", row.conversation_id);
-
-        const other = participants?.find((p) => p.user_id !== adminId);
-        const profile = other?.profile;
-
-        const { data: lastMessage } = await supabase
-          .from("messages")
-          .select("content, created_at, sender_id")
-          .eq("conversation_id", row.conversation_id)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .single();
-
-        const unreadFilter = row.last_read_at
-          ? supabase.from("messages").select("*", { count: "exact", head: true }).gt("created_at", row.last_read_at)
-          : supabase.from("messages").select("*", { count: "exact", head: true });
-
-        const { count: unreadCount } = await unreadFilter
-          .eq("conversation_id", row.conversation_id)
-          .neq("sender_id", adminId);
-
-        return {
-          conversationId: row.conversation_id,
-          createdAt: row.conversation?.created_at,
-          updatedAt: row.conversation?.updated_at,
-          profile,
-          otherUserId: other?.user_id,
-          lastMessage,
-          unreadCount: unreadCount || 0,
-        };
-      })
-    );
-
-    return { data: enriched, error: null };
-  },
-
-  searchUsers: async (query) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .or(`full_name.ilike.%${query}%,email.ilike.%${query}%`)
-      .eq("role", "user")
-      .limit(20);
-    return { data, error };
+      return { data, error: null };
+    } catch (err) {
+      console.error("[chatService.sendMessage] Unexpected exception during insert", {
+        ...context,
+        error: err,
+      });
+      return { data: null, error: err };
+    }
   },
 
   markAsRead: async (conversationId, userId) => {
     const { error } = await supabase
-      .from("conversation_participants")
-      .update({ last_read_at: new Date().toISOString() })
+      .from("messages")
+      .update({ is_read: true })
       .eq("conversation_id", conversationId)
-      .eq("user_id", userId);
+      .neq("sender_id", userId);
     return { error };
   },
+
+  completeConversation: async (conversationId) => {
+    const { data, error } = await supabase
+      .from("conversations")
+      .update({ status: "completed" })
+      .eq("id", conversationId)
+      .select("*")
+      .single();
+    return { data, error };
+  },
+
 };

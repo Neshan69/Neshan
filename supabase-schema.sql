@@ -1,153 +1,164 @@
--- Supabase SQL schema for messaging feature
--- Run this in the Supabase SQL Editor before using messaging.
+-- =====================================================================
+-- Supabase schema mirror for the Neshan Niroula portfolio messaging
+-- =====================================================================
+-- AUTHORITATIVE SOURCE: the timestamped files in supabase/migrations/.
+-- This file is kept in sync with them for reference only.
+-- Apply changes via new migrations, not by re-running this file.
+-- Run in the Supabase SQL Editor.
+-- =====================================================================
 
--- Profiles: extend auth.users with app-specific fields
+create extension if not exists "uuid-ossp";
+
+-- ----------------------------------------------------------------------------
+-- 1. Profiles (extends auth.users)
+-- ----------------------------------------------------------------------------
 create table if not exists public.profiles (
-  id uuid references auth.users on delete cascade primary key,
-  email text,
+  id uuid not null references auth.users on delete cascade,
   full_name text,
-  role text default 'user',
   avatar_url text,
-  created_at timestamp with time zone default timezone('utc'::text, now()),
-  updated_at timestamp with time zone default timezone('utc'::text, now())
+  email text,
+  role text not null default 'user'::text,
+  created_at timestamp with time zone not null default timezone('utc'::text, now()),
+  updated_at timestamp with time zone not null default timezone('utc'::text, now()),
+  primary key (id)
 );
 
 alter table public.profiles enable row level security;
 
-create policy "Users can view own profile"
+create policy "Public profiles are viewable by everyone."
   on public.profiles for select
-  using (auth.uid() = id);
+  using ( true );
 
-create policy "Users can update own profile"
+create policy "Users can insert their own profile."
+  on public.profiles for insert
+  with check ( auth.uid() = id );
+
+create policy "Users can update own non-role profile."
   on public.profiles for update
-  using (auth.uid() = id);
+  using ( auth.uid() = id )
+  with check ( role = ( select role from public.profiles where id = auth.uid() ) );
 
-create policy "Admins can view all profiles"
-  on public.profiles for select
+-- ----------------------------------------------------------------------------
+-- 2. Conversations
+-- ----------------------------------------------------------------------------
+create table if not exists public.conversations (
+  id uuid not null default gen_random_uuid() primary key,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  admin_id uuid not null references public.profiles(id) on delete cascade,
+  status text not null default 'active'::text,
+  created_at timestamp with time zone not null default timezone('utc'::text, now()),
+  updated_at timestamp with time zone not null default timezone('utc'::text, now()),
+  unique(user_id, admin_id)
+);
+
+alter table public.conversations enable row level security;
+
+create policy "Users can view their own conversations."
+  on public.conversations for select
   using (
-    exists (
+    auth.uid() = user_id
+    or exists (
       select 1 from public.profiles p
       where p.id = auth.uid() and p.role = 'admin'
     )
   );
 
--- Conversations
-create table if not exists public.conversations (
-  id uuid default gen_random_uuid() primary key,
-  created_at timestamp with time zone default timezone('utc'::text, now()),
-  updated_at timestamp with time zone default timezone('utc'::text, now())
-);
+create policy "Users can create conversations."
+  on public.conversations for insert
+  with check ( auth.uid() = user_id );
 
-alter table public.conversations enable row level security;
-
-create policy "Users can view conversations they participate in"
-  on public.conversations for select
+create policy "Users can update own conversation status."
+  on public.conversations for update
   using (
-    exists (
-      select 1 from public.conversation_participants cp
-      where cp.conversation_id = conversations.id
-        and cp.user_id = auth.uid()
+    auth.uid() = user_id
+    or exists (
+      select 1 from public.profiles p
+      where p.id = auth.uid() and p.role = 'admin'
+    )
+  )
+  with check (
+    auth.uid() = user_id
+    or exists (
+      select 1 from public.profiles p
+      where p.id = auth.uid() and p.role = 'admin'
     )
   );
 
-create policy "Authenticated users can create conversations"
-  on public.conversations for insert
-  with check (auth.uid() is not null);
-
--- Conversation participants
-create table if not exists public.conversation_participants (
-  id uuid default gen_random_uuid() primary key,
-  conversation_id uuid references public.conversations on delete cascade not null,
-  user_id uuid references auth.users on delete cascade not null,
-  joined_at timestamp with time zone default timezone('utc'::text, now()),
-  last_read_at timestamp with time zone,
-  unique(conversation_id, user_id)
-);
-
-alter table public.conversation_participants enable row level security;
-
-create policy "Users can view their own memberships"
-  on public.conversation_participants for select
-  using (auth.uid() = user_id);
-
-create policy "Authenticated users can join conversations"
-  on public.conversation_participants for insert
-  with check (auth.uid() = user_id);
-
-create policy "Users can update their own membership"
-  on public.conversation_participants for update
-  using (auth.uid() = user_id);
-
--- Messages
+-- ----------------------------------------------------------------------------
+-- 3. Messages
+-- ----------------------------------------------------------------------------
 create table if not exists public.messages (
-  id uuid default gen_random_uuid() primary key,
-  conversation_id uuid references public.conversations on delete cascade not null,
-  sender_id uuid references auth.users on delete cascade not null,
-  content text not null,
-  created_at timestamp with time zone default timezone('utc'::text, now())
+  id uuid not null default gen_random_uuid() primary key,
+  conversation_id uuid not null references public.conversations(id) on delete cascade,
+  sender_id uuid not null references public.profiles(id) on delete cascade,
+  message text not null,
+  is_read boolean not null default false,
+  created_at timestamp with time zone not null default timezone('utc'::text, now())
 );
 
 alter table public.messages enable row level security;
 
-create policy "Users can view messages in their conversations"
+create policy "Users can view messages in their conversations."
   on public.messages for select
   using (
     exists (
-      select 1 from public.conversation_participants cp
-      where cp.conversation_id = messages.conversation_id
-        and cp.user_id = auth.uid()
+      select 1 from public.conversations c
+      where c.id = messages.conversation_id
+        and (c.user_id = auth.uid() or c.admin_id = auth.uid())
     )
   );
 
-create policy "Users can send messages to their conversations"
+create policy "Users can send messages to their conversations."
   on public.messages for insert
   with check (
-    exists (
-      select 1 from public.conversation_participants cp
-      where cp.conversation_id = messages.conversation_id
-        and cp.user_id = auth.uid()
+    auth.uid() = sender_id
+    and exists (
+      select 1 from public.conversations c
+      where c.id = messages.conversation_id
+        and (c.user_id = auth.uid() or c.admin_id = auth.uid())
     )
-    and auth.uid() = sender_id
   );
 
--- Notifications
-create table if not exists public.notifications (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users on delete cascade not null,
-  message_id uuid references public.messages on delete cascade not null,
-  type text default 'new_message',
-  read boolean default false,
-  created_at timestamp with time zone default timezone('utc'::text, now())
-);
+create policy "Users can update read status of messages in their conversations."
+  on public.messages for update
+  using (
+    exists (
+      select 1 from public.conversations c
+      where c.id = messages.conversation_id
+        and (c.user_id = auth.uid() or c.admin_id = auth.uid())
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.conversations c
+      where c.id = messages.conversation_id
+        and (c.user_id = auth.uid() or c.admin_id = auth.uid())
+    )
+  );
 
-alter table public.notifications enable row level security;
+-- ----------------------------------------------------------------------------
+-- 4. Realtime
+-- ----------------------------------------------------------------------------
+alter publication supabase_realtime add table public.messages;
+alter publication supabase_realtime add table public.conversations;
 
-create policy "Users can view their own notifications"
-  on public.notifications for select
-  using (auth.uid() = user_id);
-
-create policy "Users can update their own notifications"
-  on public.notifications for update
-  using (auth.uid() = user_id);
-
-create policy "Authenticated users can create notifications"
-  on public.notifications for insert
-  with check (auth.uid() is not null);
-
--- Storage bucket for avatars (optional)
--- insert into storage.buckets (id, name, public) values ('avatars', 'avatars', true);
-
--- Helper: ensure a profile row exists after signup
+-- ----------------------------------------------------------------------------
+-- 5. Helper: ensure a profile row exists after signup
+-- ----------------------------------------------------------------------------
 create or replace function public.handle_new_user()
-returns trigger as $$
+returns trigger
+language plpgsql
+security definer
+as $$
 begin
-  insert into public.profiles (id, email)
-  values (new.id, new.email);
+  insert into public.profiles (id, email, role, created_at, updated_at)
+  values (new.id, new.email, 'user', now(), now())
+  on conflict (id) do nothing;
   return new;
 end;
-$$ language plpgsql security definer;
+$$;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+  for each row execute function public.handle_new_user();
