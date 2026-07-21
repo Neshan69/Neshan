@@ -1,4 +1,6 @@
 -- =====================================================================
+-- DEPRECATED — DO NOT APPLY OR EDIT.
+-- =====================================================================
 -- Supabase schema mirror for the Neshan Niroula portfolio messaging
 -- =====================================================================
 -- AUTHORITATIVE SOURCE: the timestamped files in supabase/migrations/.

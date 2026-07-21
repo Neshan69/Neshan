@@ -14,6 +14,10 @@ export default function ChatBubble({ message, isUser, showSender = true, variant
       ? "rounded-2xl px-5 py-3 leading-relaxed"
       : "rounded-2xl p-5 leading-relaxed";
 
+  const senderName =
+    message.sender?.full_name || (isUser ? "You" : "Support");
+  const time = formatMessageTime(message.created_at);
+
   return (
     <motion.div
       initial={prefersReduced ? false : { opacity: 0, y: 10 }}
@@ -25,20 +29,20 @@ export default function ChatBubble({ message, isUser, showSender = true, variant
         <div className="flex items-center gap-2 mb-1">
           {isUser ? (
             <>
-              <span className="text-[9px] text-on-surface-variant/80">
-                {formatMessageTime(message.created_at)}
+              <span className="text-[10px] text-on-surface-variant/80">
+                {time}
               </span>
-              <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
-                {message.sender?.full_name || "You"}
+              <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
+                {senderName}
               </span>
             </>
            ) : (
             <>
-              <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">
-                {message.sender?.full_name || "Admin"}
+              <span className="text-[11px] font-bold text-secondary uppercase tracking-wider">
+                {senderName}
               </span>
-              <span className="text-[9px] text-on-surface-variant/80">
-                {formatMessageTime(message.created_at)}
+              <span className="text-[10px] text-on-surface-variant/80">
+                {time}
               </span>
             </>
           )}
@@ -54,12 +58,14 @@ export default function ChatBubble({ message, isUser, showSender = true, variant
               ? "chat-bubble-admin rounded-tl-none text-on-surface-variant"
               : "chat-bubble-admin rounded-tl-none text-on-surface-variant"
         }`}
+        role="group"
+        aria-label={`Message from ${senderName}${time ? ` at ${time}` : ""}`}
       >
         {message.message ?? message.content}
       </div>
       {variant === "compact" && (
         <span className="text-[9px] text-on-surface-variant/80 px-1">
-          {formatMessageTime(message.created_at)}
+          {time}
         </span>
       )}
     </motion.div>

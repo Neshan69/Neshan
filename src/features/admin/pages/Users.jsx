@@ -36,32 +36,33 @@ export default function AdminUsers() {
       <div className="glass-card rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
+            <caption className="sr-only">Registered users</caption>
             <thead>
               <tr className="border-b border-white/5">
-                <th className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Name</th>
-                <th className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Email</th>
-                <th className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Role</th>
-                <th className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Joined</th>
-                <th className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Status</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Name</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Email</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Role</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Joined</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Status</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-on-surface-variant">Loading users...</td>
+                  <td scope="row" colSpan={5} className="px-6 py-8 text-center text-on-surface-variant">Loading users...</td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-error">{error}</td>
+                  <td scope="row" colSpan={5} className="px-6 py-8 text-center text-error">{error}</td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-on-surface-variant">No users found.</td>
+                  <td scope="row" colSpan={5} className="px-6 py-8 text-center text-on-surface-variant">No users found.</td>
                 </tr>
               ) : (
                 users.map((u) => (
                   <tr key={u.id} className="border-b border-white/5 last:border-b-0">
-                    <td className="px-6 py-4 text-primary">{u.full_name || "—"}</td>
+                    <th scope="row" className="text-left font-normal px-6 py-4 text-primary">{u.full_name || "—"}</th>
                     <td className="px-6 py-4 text-on-surface-variant">{u.email || "—"}</td>
                     <td className="px-6 py-4">
                       <span className={`text-xs font-bold tracking-widest uppercase ${u.role === "admin" ? "text-secondary" : "text-on-surface-variant"}`}>

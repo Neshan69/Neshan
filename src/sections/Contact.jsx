@@ -2,15 +2,95 @@ import { useState } from "react";
 import Reveal from "../components/Reveal";
 import MicroLabel from "../components/MicroLabel";
 
-export default function Contact({ active }) {
-  const [status, setStatus] = useState("idle"); // idle | sending | sent
+const MAX_MESSAGE = 2000;
+const MAX_SUBJECT = 100;
+const MAX_NAME = 50;
+const MIN_NAME = 2;
+const MIN_SUBJECT = 5;
+const MIN_MESSAGE = 10;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setStatus("sending");
-    // No backend yet (api-design.md). Simulate a stubbed submit.
-    setTimeout(() => setStatus("sent"), 600);
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+export default function Contact({ active }) {
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case "name":
+        if (!value.trim()) return "Name is required.";
+        if (value.trim().length < MIN_NAME) return `Name must be at least ${MIN_NAME} characters.`;
+        if (value.trim().length > MAX_NAME) return `Name must be under ${MAX_NAME} characters.`;
+        return "";
+      case "email":
+        if (!value.trim()) return "Email is required.";
+        if (!validateEmail(value.trim())) return "Please enter a valid email address.";
+        return "";
+      case "subject":
+        if (!value.trim()) return "Subject is required.";
+        if (value.trim().length < MIN_SUBJECT) return `Subject must be at least ${MIN_SUBJECT} characters.`;
+        if (value.trim().length > MAX_SUBJECT) return `Subject must be under ${MAX_SUBJECT} characters.`;
+        return "";
+      case "message":
+        if (!value.trim()) return "Message is required.";
+        if (value.trim().length < MIN_MESSAGE) return `Message must be at least ${MIN_MESSAGE} characters.`;
+        if (value.trim().length > MAX_MESSAGE) return `Message must be under ${MAX_MESSAGE} characters.`;
+        return "";
+      default:
+        return "";
+    }
   };
+
+  const validateForm = () => {
+    const newErrors = {};
+    Object.keys(form).forEach((key) => {
+      const error = validateField(key, form[key]);
+      if (error) newErrors[key] = error;
+    });
+    setErrors(newErrors);
+    setTouched({ name: true, email: true, subject: true, message: true });
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (touched[name]) {
+      setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (status === "sending") return;
+    if (!validateForm()) return;
+
+    setStatus("sending");
+    setErrors({});
+
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
+    setStatus("sent");
+    setForm({ name: "", email: "", subject: "", message: "" });
+    setTouched({});
+  };
+
+  const inputClass = (field) =>
+    `w-full bg-transparent border-b-2 py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display text-primary placeholder:text-on-surface-variant/80 ${
+      touched[field] && errors[field] ? "border-error" : "border-outline-variant"
+    }`;
+
+  const labelClass = "text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase";
 
   return (
     <section
@@ -27,74 +107,138 @@ export default function Contact({ active }) {
         </h2>
 
         {status === "sent" ? (
-          <p
-            role="status"
-            aria-live="polite"
-            className="text-xl font-display text-secondary"
-          >
-            Thank you — your proposal is on its way. (Demo form; not yet wired to
-            a backend.)
+          <p role="status" aria-live="polite" className="text-xl font-display text-secondary">
+            Thank you — your proposal is on its way. We will be in touch shortly.
+          </p>
+        ) : status === "error" ? (
+          <p role="alert" className="text-error text-sm mb-6">
+            Something went wrong. Please try again.
           </p>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative">
-                <label
-                  htmlFor="name"
-                  className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase"
-                >
+                <label htmlFor="name" className={labelClass}>
                   Your Name
                 </label>
                 <input
                   id="name"
                   name="name"
-                  required
-                  className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display text-primary placeholder:text-on-surface-variant/80"
+                  value={form.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  aria-invalid={touched.name && Boolean(errors.name)}
+                  aria-describedby={errors.name ? "name-error" : undefined}
+                  className={inputClass("name")}
                   placeholder="Alexander Morgan"
                   type="text"
+                  autoComplete="name"
+                  maxLength={MAX_NAME + 10}
                 />
+                {touched.name && errors.name && (
+                  <p id="name-error" className="text-error text-xs mt-1" role="alert">
+                    {errors.name}
+                  </p>
+                )}
               </div>
               <div className="relative">
-                <label
-                  htmlFor="email"
-                  className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase"
-                >
+                <label htmlFor="email" className={labelClass}>
                   Email Address
                 </label>
                 <input
                   id="email"
                   name="email"
-                  required
-                  className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display text-primary placeholder:text-on-surface-variant/80"
+                  value={form.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  aria-invalid={touched.email && Boolean(errors.email)}
+                  aria-describedby={errors.email ? "email-error" : undefined}
+                  className={inputClass("email")}
                   placeholder="alex@studio.com"
                   type="email"
+                  autoComplete="email"
+                  maxLength={254}
                 />
+                {touched.email && errors.email && (
+                  <p id="email-error" className="text-error text-xs mt-1" role="alert">
+                    {errors.email}
+                  </p>
+                )}
               </div>
             </div>
             <div className="relative">
-              <label
-                htmlFor="inquiry"
-                className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase"
-              >
+              <label htmlFor="subject" className={labelClass}>
+                Subject
+              </label>
+              <input
+                id="subject"
+                name="subject"
+                value={form.subject}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                aria-invalid={touched.subject && Boolean(errors.subject)}
+                aria-describedby={errors.subject ? "subject-error" : undefined}
+                className={inputClass("subject")}
+                  placeholder="Project collaboration"
+                  type="text"
+                  autoComplete="subject"
+                  maxLength={MAX_SUBJECT + 10}
+              />
+              {touched.subject && errors.subject && (
+                <p id="subject-error" className="text-error text-xs mt-1" role="alert">
+                  {errors.subject}
+                </p>
+              )}
+            </div>
+            <div className="relative">
+              <label htmlFor="message" className={labelClass}>
                 Your Inquiry
               </label>
               <textarea
-                id="inquiry"
-                name="inquiry"
-                rows={3}
-                className="w-full bg-transparent border-b-2 border-outline-variant py-4 focus:border-secondary hover:border-secondary outline-none transition-colors text-xl font-display h-24 resize-none text-primary placeholder:text-on-surface-variant/80"
-                placeholder="How can we collaborate?"
+                id="message"
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                aria-invalid={touched.message && Boolean(errors.message)}
+                aria-describedby={errors.message ? "message-error" : `message-count${status === "sending" ? "" : ""}`}
+                className={inputClass("message")}
+                  placeholder="How can we collaborate?"
+                  rows={3}
+                  autoComplete="off"
+                  maxLength={MAX_MESSAGE + 10}
               />
+              <div className="flex justify-between items-center mt-1">
+                {touched.message && errors.message ? (
+                  <p id="message-error" className="text-error text-xs" role="alert">
+                    {errors.message}
+                  </p>
+                ) : (
+                  <span />
+                )}
+                <span id="message-count" className="text-[10px] text-on-surface-variant tabular-nums">
+                  {form.message.length}/{MAX_MESSAGE}
+                </span>
+              </div>
             </div>
             <button
               type="submit"
               disabled={status === "sending"}
               className="group flex items-center gap-4 text-xl font-display font-bold text-primary hover:text-secondary transition-colors disabled:opacity-50"
             >
-              {status === "sending" ? "SENDING…" : "SEND PROPOSAL"}
-              <span className="material-symbols-outlined text-2xl group-hover:translate-x-4 transition-transform">
-                arrow_forward
-              </span>
+              {status === "sending" ? (
+                <>
+                  <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  SENDING…
+                </>
+              ) : (
+                <>
+                  SEND PROPOSAL
+                  <span className="material-symbols-outlined text-2xl group-hover:translate-x-4 transition-transform">
+                    arrow_forward
+                  </span>
+                </>
+              )}
             </button>
           </form>
         )}
@@ -102,9 +246,15 @@ export default function Contact({ active }) {
         <footer className="mt-12 pt-6 border-t border-outline-variant flex flex-col md:flex-row justify-between text-[10px] font-bold tracking-widest text-on-surface-variant/80">
           <p>© 2024 NESHAN NIROULA</p>
           <div className="flex gap-8 mt-4 md:mt-0">
-            <a className="hover:text-secondary transition-colors" href="#">LINKEDIN</a>
-            <a className="hover:text-secondary transition-colors" href="#">DRIBBBLE</a>
-            <a className="hover:text-secondary transition-colors" href="#">INSTAGRAM</a>
+            <a className="hover:text-secondary transition-colors" href="#">
+              LINKEDIN
+            </a>
+            <a className="hover:text-secondary transition-colors" href="#">
+              DRIBBBLE
+            </a>
+            <a className="hover:text-secondary transition-colors" href="#">
+              INSTAGRAM
+            </a>
           </div>
         </footer>
       </Reveal>

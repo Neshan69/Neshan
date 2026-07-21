@@ -1,17 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import AuthModal from "../features/auth/AuthModal";
-import NotificationDropdown from "./NotificationDropdown";
 import { AdminRoutes } from "../types";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 export default function Header({ onContact }) {
   const navigate = useNavigate();
   const { user, profile, logout, loading } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+  const menuRef = useRef(null);
 
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "User";
+
+  useEffect(() => {
+    if (!showMenu) return;
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+    const handleEsc = (e) => {
+      if (e.key === "Escape") setShowMenu(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, [showMenu]);
 
   return (
     <>
@@ -25,8 +45,8 @@ export default function Header({ onContact }) {
           ) : user ? (
             <>
               <div className="flex items-center gap-2">
-                <NotificationDropdown />
           <button
+            type="button"
             onClick={() => setShowMenu(!showMenu)}
             aria-expanded={showMenu}
             aria-haspopup="true"
@@ -37,16 +57,16 @@ export default function Header({ onContact }) {
           </button>
               </div>
               {showMenu && (
-                <div className="absolute right-0 top-full mt-2 w-48 glass-card rounded-xl overflow-hidden py-2">
+                <div ref={menuRef} role="menu" aria-label="Account menu" className="absolute right-0 top-full mt-2 w-48 glass-card rounded-xl overflow-hidden py-2">
                   {profile?.role === "admin" && (
-                    <button onClick={() => { navigate(AdminRoutes.DASHBOARD); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
+                    <button role="menuitem" onClick={() => { navigate(AdminRoutes.DASHBOARD); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
                       Admin
                     </button>
                   )}
-                  <button onClick={() => { onContact?.(); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
+                  <button role="menuitem" onClick={() => { onContact?.(); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
                     Chat
                   </button>
-                  <button onClick={async () => { await logout(); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
+                  <button role="menuitem" onClick={() => setShowSignOutConfirm(true)} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
                     Sign out
                   </button>
                 </div>
@@ -73,6 +93,19 @@ export default function Header({ onContact }) {
           }}
         />
       )}
+      <ConfirmDialog
+        open={showSignOutConfirm}
+        title="Sign out?"
+        message="You will need to sign in again to access all features."
+        confirmLabel="Sign out"
+        cancelLabel="Cancel"
+        onConfirm={async () => {
+          await logout();
+          setShowSignOutConfirm(false);
+          setShowMenu(false);
+        }}
+        onCancel={() => setShowSignOutConfirm(false)}
+      />
     </>
   );
 }

@@ -55,6 +55,7 @@ export default function NavBar({ sections, activeIndex, onNavigate }) {
         })}
       <span
         ref={underlineRef}
+        aria-hidden="true"
         className="absolute bottom-0 h-[2px] bg-secondary rounded-full transition-all duration-300 ease-out"
         style={{ left: 0, width: 0 }}
       />

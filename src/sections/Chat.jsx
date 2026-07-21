@@ -4,6 +4,18 @@ import { chatService } from "../services/chat.service";
 import { supabase } from "../lib/supabase";
 import ChatBubble from "../components/ChatBubble";
 
+function getInitials(name, email) {
+  if (name && name.trim()) {
+    return name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase() || "")
+      .join("");
+  }
+  return email?.[0]?.toUpperCase() || "?";
+}
+
 const NAV = [
   { label: "EXPERTISE", index: 0 },
   { label: "WORK", index: 1 },
@@ -22,7 +34,7 @@ export default function Chat({ onBack, onExit }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const containerRef = useRef(null);
-  const [adminId, setAdminId] = useState(null);
+  const [admin, setAdmin] = useState(null);
 
   useEffect(() => {
     const fetchAdmin = async () => {
@@ -30,7 +42,7 @@ export default function Chat({ onBack, onExit }) {
       if (error) {
         setError("Could not load chat.");
       } else if (data) {
-        setAdminId(data.id);
+        setAdmin(data);
       } else {
         setError("Messaging is unavailable right now.");
         setLoading(false);
@@ -40,7 +52,7 @@ export default function Chat({ onBack, onExit }) {
   }, []);
 
   useEffect(() => {
-    if (!user || !adminId) return;
+    if (!user || !admin) return;
 
     const setupConversation = async () => {
       setLoading(true);
@@ -52,7 +64,7 @@ export default function Chat({ onBack, onExit }) {
       if (!conv) {
         const { data: newConv, error: createError } = await chatService.createConversation(
           user.id,
-          adminId
+          admin.id
         );
         if (createError || !newConv) {
           setError("Failed to create conversation.");
@@ -73,7 +85,7 @@ export default function Chat({ onBack, onExit }) {
     };
 
     setupConversation();
-  }, [user, adminId]);
+  }, [user, admin]);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -169,7 +181,7 @@ export default function Chat({ onBack, onExit }) {
           aria-label="Back to portfolio"
           className="font-display font-bold text-lg md:text-2xl tracking-tight text-primary uppercase truncate"
         >
-          Neshan Niroula
+          <span className="sr-only">Neshan Niroula — </span>Back to portfolio
         </button>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#3cd7ff]" />
@@ -182,54 +194,88 @@ export default function Chat({ onBack, onExit }) {
       <main
         ref={containerRef}
         className="flex-1 overflow-y-auto chat-container space-y-8 pr-2 pt-32 pb-32 px-6 md:pr-24 max-w-3xl mx-auto w-full"
+        aria-label="Conversation with support"
       >
-        <div className="flex justify-center">
-          <span className="text-[10px] font-bold tracking-[0.2em] text-on-surface-variant/80 uppercase">
+        <h1 className="sr-only">Chat with support</h1>
+        {admin && (
+          <div className="flex items-center gap-4 mb-6 pb-4 border-b border-white/5">
+            <div className="w-12 h-12 rounded-xl bg-surface-container-high overflow-hidden shrink-0 border border-white/10">
+              {admin.avatar_url ? (
+                <img src={admin.avatar_url} alt={admin.full_name || "Admin"} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-sm font-bold text-secondary uppercase">
+                    {getInitials(admin.full_name, admin.email)}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div>
+              <h2 className="font-display text-lg font-bold text-on-surface">
+                {admin.full_name || "Support Team"}
+              </h2>
+              <p className="text-[11px] text-on-surface-variant capitalize">
+                {admin.role === "admin" ? "Admin" : "Support"}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="flex justify-center" aria-hidden="true">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-on-surface-variant uppercase">
             Today
           </span>
         </div>
 
         {loading ? (
-          <div className="text-center text-on-surface-variant py-8">Loading messages...</div>
+          <div className="text-center text-on-surface-variant py-8" role="status">Loading messages…</div>
         ) : error ? (
-          <div className="text-center text-error py-8">{error}</div>
+          <div className="text-center text-error py-8" role="alert">{error}</div>
         ) : (
-          messages.map((m) => (
-            <ChatBubble key={m.id} message={m} isUser={m.sender_id === user.id} />
-          ))
+          <div className="space-y-8" aria-label="Messages">
+            {messages.map((m) => (
+              <ChatBubble key={m.id} message={m} isUser={m.sender_id === user.id} />
+            ))}
+          </div>
         )}
+        <div aria-live="polite" className="sr-only">
+          {messages.length > 0
+            ? `${messages[messages.length - 1]?.sender?.full_name || (messages[messages.length - 1]?.sender_id === user.id ? "You" : "Support")} sent a message.`
+            : ""}
+        </div>
       </main>
 
       <div className="fixed bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 md:px-6 z-50">
-        <div className="glass-nav rounded-2xl p-2 flex items-center gap-2 shadow-2xl border border-white/5">
-          <button
-            type="button"
-            aria-label="Add attachment"
-            className="p-2 md:p-3 text-on-surface-variant hover:text-secondary transition-colors"
-          >
-            <span className="material-symbols-outlined" aria-hidden="true">add_circle</span>
-          </button>
+        <form
+          className="glass-nav rounded-2xl p-2 flex items-center gap-2 shadow-2xl border border-white/5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            send();
+          }}
+        >
+          <label htmlFor="chat-message-input" className="sr-only">Type your message</label>
           <input
+            id="chat-message-input"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
             maxLength={2000}
-            className="flex-1 bg-transparent border-none focus:ring-0 text-primary placeholder:text-on-surface-variant/80 py-2 md:py-3 outline-none text-sm md:text-base"
+            className="flex-1 bg-transparent border-none focus:ring-0 text-primary placeholder:text-on-surface-variant py-2 md:py-3 outline-none text-sm md:text-base"
             placeholder="Describe your vision..."
             type="text"
             aria-label="Message"
+            autoComplete="off"
           />
-          <span className="text-[9px] text-on-surface-variant/80 mr-2">{draft.length}/2000</span>
+          <span className="text-[9px] text-on-surface-variant mr-2" aria-hidden="true">{draft.length}/2000</span>
           <button
-            type="button"
-            onClick={send}
+            type="submit"
             disabled={sending}
             className="bg-secondary text-surface px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold text-[10px] tracking-widest hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
           >
             SEND
             <span className="material-symbols-outlined text-sm" aria-hidden="true">send</span>
           </button>
-        </div>
+        </form>
       </div>
 
       <nav

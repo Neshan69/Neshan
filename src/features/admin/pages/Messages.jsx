@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { chatService } from "../../../services/chat.service";
 import { supabase } from "../../../lib/supabase";
 import ChatBubble from "../../../components/ChatBubble";
 import { timeAgo } from "../../../lib/chat-utils";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 
 function formatTime(iso) {
   return timeAgo(iso);
@@ -30,7 +31,22 @@ export default function AdminMessages() {
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+  const [confirmComplete, setConfirmComplete] = useState(false);
   const containerRef = useRef(null);
+
+  const filteredConversations = conversations.filter((c) => {
+    if (!query.trim()) return true;
+    const name = c.user?.full_name || c.user?.email || "";
+    const email = c.user?.email || "";
+    const last = c.lastMessage?.message || "";
+    const q = query.trim().toLowerCase();
+    return (
+      name.toLowerCase().includes(q) ||
+      email.toLowerCase().includes(q) ||
+      last.toLowerCase().includes(q)
+    );
+  });
 
   const loadConversations = useCallback(async () => {
     if (!user) return;
@@ -51,6 +67,7 @@ export default function AdminMessages() {
   useEffect(() => {
     if (!selectedId || !user) return;
     const load = async () => {
+      setConfirmComplete(false);
       const { data } = await chatService.getMessages(selectedId);
       setMessages(data || []);
       await chatService.markAsRead(selectedId, user.id);
@@ -174,86 +191,101 @@ export default function AdminMessages() {
         prev.map((c) => (c.id === selectedId ? data : c))
       );
     }
+    setConfirmComplete(false);
   };
 
   const selectedConversation = conversations.find((c) => c.id === selectedId);
 
   return (
     <div className="max-w-6xl mx-auto">
-      <h2 className="font-display text-4xl font-bold text-primary mb-8">Messages</h2>
-
-      <div className="glass-card rounded-xl overflow-hidden border border-white/5">
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/5 md:h-[600px]">
+      <div className="glass-card rounded-2xl overflow-hidden border border-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/5 md:h-[640px]">
           {/* Conversation list */}
-          <div className="md:col-span-1 flex flex-col md:max-h-[600px] min-h-0">
-            <div className="p-4 border-b border-white/5">
-              <p className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase">
-                Conversations
-              </p>
-            </div>
-            <div className="flex-1 overflow-y-auto">
+          <section className="md:col-span-1 flex flex-col md:max-h-[640px] min-h-0 bg-surface-container-low/30 border-r border-white/5">
+            <header className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-2xl font-bold text-on-surface">Messages</h2>
+                {conversations.some((c) => c.unread > 0) && (
+                  <span className="bg-secondary/20 text-secondary px-2 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase">
+                    {conversations.reduce((n, c) => n + (c.unread || 0), 0)} NEW
+                  </span>
+                )}
+              </div>
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Filter conversations..."
+                  aria-label="Filter conversations"
+                  className="w-full bg-surface-container-lowest/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-secondary transition-colors"
+                />
+              </div>
+            </header>
+            <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1 px-3 pb-3">
               {loading ? (
                 <p className="text-sm text-on-surface-variant p-4">Loading...</p>
-              ) : conversations.length === 0 ? (
-                <p className="text-sm text-on-surface-variant p-4">No conversations yet.</p>
+              ) : filteredConversations.length === 0 ? (
+                <p className="text-sm text-on-surface-variant p-4">
+                  {conversations.length === 0 ? "No conversations yet." : "No matches."}
+                </p>
               ) : (
-                conversations.map((c) => {
+                filteredConversations.map((c) => {
                   const displayName = c.user?.full_name || c.user?.email || "Unknown User";
                   const email = c.user?.email || "";
                   const avatar = c.user?.avatar_url;
                   const lastMessage = c.lastMessage?.message || "";
                   const isCompleted = c.status === "completed";
+                  const active = selectedId === c.id;
                   return (
                     <button
                       key={c.id}
                       onClick={() => setSelectedId(c.id)}
-                      className={`w-full text-left p-4 border-b border-white/5 hover:bg-white/5 transition-colors flex items-start gap-3 ${
-                        selectedId === c.id ? "bg-white/5" : ""
+                      className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
+                        active
+                          ? "bg-white/5 border-white/10"
+                          : "border-transparent hover:bg-white/5"
                       }`}
                     >
-                      <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden bg-secondary/20 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-lg bg-surface-container-high overflow-hidden shrink-0">
                         {avatar ? (
-                          <img
-                            src={avatar}
-                            alt={displayName}
-                            className="w-full h-full object-cover"
-                          />
+                          <img src={avatar} alt={displayName} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-[11px] font-bold text-secondary uppercase">
-                            {getInitials(c.user?.full_name, email)}
-                          </span>
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="text-sm font-bold text-secondary uppercase">
+                              {getInitials(c.user?.full_name, email)}
+                            </span>
+                          </div>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2 mb-0.5">
-                          <p className="text-sm font-bold text-primary truncate">
+                        <div className="flex justify-between items-start mb-1">
+                          <h3 className={`font-semibold truncate ${active ? "text-on-surface" : "text-on-surface-variant"}`}>
                             {displayName}
-                          </p>
-                          <span className="text-[9px] text-on-surface-variant/80 flex-shrink-0">
+                          </h3>
+                          <span className="text-[10px] text-on-surface-variant flex-shrink-0 ml-2">
                             {formatTime(c.lastMessageAt)}
                           </span>
                         </div>
-                        <p className="text-[10px] text-on-surface-variant/80 truncate mb-1">
-                          {email}
+                        <p className="text-[11px] text-on-surface-variant/80 truncate mb-2 italic">
+                          {lastMessage || (isCompleted ? "Completed" : "No messages yet")}
                         </p>
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-xs text-on-surface-variant truncate">
-                            {lastMessage || (isCompleted ? "Completed" : "No messages yet")}
-                          </p>
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            {c.unread > 0 && (
-                              <span className="text-[9px] font-bold text-surface bg-secondary rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center">
-                                {c.unread > 99 ? "99+" : c.unread}
-                              </span>
-                            )}
-                            <span
-                              className={`text-[9px] uppercase tracking-widest ${
-                                isCompleted ? "text-on-surface-variant/80" : "text-secondary"
-                              }`}
-                            >
-                              {isCompleted ? "Completed" : "Active"}
+                        <div className="flex items-center gap-2">
+                          {isCompleted ? (
+                            <span className="px-2 py-0.5 rounded-full bg-white/5 text-on-surface-variant text-[10px] font-bold tracking-widest uppercase">
+                              Completed
                             </span>
-                          </div>
+                          ) : (
+                            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold tracking-widest uppercase">
+                              <span className="w-1.5 h-1.5 rounded-full bg-secondary status-pulse" />
+                              Active
+                            </span>
+                          )}
+                          {c.unread > 0 && (
+                            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold tracking-widest uppercase">
+                              {c.unread} Unread
+                            </span>
+                          )}
                         </div>
                       </div>
                     </button>
@@ -261,47 +293,87 @@ export default function AdminMessages() {
                 })
               )}
             </div>
-          </div>
+          </section>
 
           {/* Chat detail */}
           <div className="md:col-span-2 flex flex-col md:h-full min-h-0">
             {selectedConversation ? (
               <>
-                <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-bold text-primary">
-                      {selectedConversation.user?.full_name || selectedConversation.user?.email || "Unknown User"}
-                    </p>
-                    <p className="text-[10px] text-on-surface-variant uppercase tracking-widest">
-                      {selectedConversation.user?.email || ""}
-                    </p>
+                 <header className="flex items-center justify-between px-6 h-20 border-b border-white/5 shrink-0">
+                   <div className="flex items-center gap-4">
+                     <button
+                       type="button"
+                       onClick={() => setSelectedId(null)}
+                       aria-label="Back to conversations"
+                       className="p-2 -ml-2 text-on-surface-variant hover:text-secondary transition-colors rounded-full"
+                     >
+                       <span className="material-symbols-outlined text-xl">arrow_back</span>
+                     </button>
+                     <div className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-white/10 shrink-0">
+                      {selectedConversation.user?.avatar_url ? (
+                        <img src={selectedConversation.user.avatar_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-secondary uppercase">
+                            {getInitials(selectedConversation.user?.full_name, selectedConversation.user?.email || "")}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <h2 className="font-display text-xl font-bold text-on-surface">
+                        {selectedConversation.user?.full_name || selectedConversation.user?.email || "Unknown User"}
+                      </h2>
+                      <p className="text-[11px] text-on-surface-variant">
+                        {selectedConversation.user?.email || ""}
+                      </p>
+                    </div>
                   </div>
-                  {selectedConversation.status !== "completed" && (
-                    <button
-                      onClick={completeConversation}
-                      className="text-[10px] font-bold tracking-widest uppercase text-secondary hover:text-primary transition-colors border border-secondary/40 px-3 py-1 rounded-full"
-                    >
-                      Complete
-                    </button>
-                  )}
-                </div>
-                 <div
-                   ref={containerRef}
-                   className="flex-1 min-h-0 overflow-y-auto p-6 space-y-4 chat-container"
-                 >
-                   {messages.length === 0 ? (
-                     <p className="text-sm text-on-surface-variant text-center py-8">
-                       No messages yet.
-                     </p>
-                   ) : (
+                  <div className="flex items-center gap-3">
+                    {selectedConversation.status !== "completed" && (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmComplete(true)}
+                        className="bg-secondary text-on-secondary px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-[0_0_20px_rgba(60,215,255,0.3)] hover:brightness-110 active:scale-95 flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-sm">check_circle</span>
+                        Complete
+                      </button>
+                    )}
+                  </div>
+
+                  <ConfirmDialog
+                    open={confirmComplete}
+                    title="Mark conversation as completed?"
+                    message="This will close the conversation. You can still view messages, but no new replies can be sent."
+                    confirmLabel="Complete"
+                    cancelLabel="Cancel"
+                    onConfirm={completeConversation}
+                    onCancel={() => setConfirmComplete(false)}
+                  />
+                </header>
+
+                <div
+                  ref={containerRef}
+                  className="flex-1 min-h-0 overflow-y-auto px-6 py-8 scrollbar-hide chat-container"
+                >
+                  <div className="max-w-[600px] mx-auto space-y-4">
+                    {messages.length === 0 ? (
+                      <p className="text-sm text-on-surface-variant text-center py-8">
+                        No messages yet.
+                      </p>
+                    ) : (
                       messages.map((m) => (
                         <ChatBubble key={m.id} message={m} isUser={m.sender_id === user.id} variant="compact" showSender={true} />
                       ))
-                   )}
-                 </div>
-                  <div className="sticky bottom-0 shrink-0 p-4 border-t border-white/5 bg-surface">
-                    {error && <p className="text-error text-xs mb-2">{error}</p>}
-                    <div className="flex items-end gap-3">
+                    )}
+                  </div>
+                </div>
+
+                <footer className="p-6 bg-surface/40 backdrop-blur-xl border-t border-white/5 shrink-0">
+                  <div className="max-w-[600px] mx-auto">
+                    <div className="relative bg-surface-container-lowest rounded-2xl border border-white/10 focus-within:border-secondary/50 transition-colors shadow-xl">
+                      {error && <p className="text-error text-xs px-5 pt-3">{error}</p>}
                       <textarea
                         value={draft}
                         onChange={(e) => {
@@ -320,18 +392,33 @@ export default function AdminMessages() {
                         id="admin-reply-input"
                         placeholder="Type a reply..."
                         aria-label="Type a reply"
-                        className="flex-1 min-h-[44px] bg-transparent border-b-2 border-outline-variant py-2.5 focus:border-secondary outline-none text-primary text-sm placeholder:text-on-surface-variant/80 resize-none overflow-y-auto leading-relaxed"
+                        className="w-full bg-transparent border-none focus:ring-0 text-on-surface px-5 py-4 pr-32 resize-none overflow-y-auto leading-relaxed placeholder:text-on-surface-variant/40"
                       />
-                      <span className="text-[9px] text-on-surface-variant/80 mb-2.5 mr-1 whitespace-nowrap">{draft.length}/2000</span>
-                      <button
-                        onClick={send}
-                        disabled={sending || !draft.trim()}
-                        className="bg-secondary text-surface px-6 py-2.5 rounded-xl font-bold text-xs tracking-widest hover:brightness-110 transition-all disabled:opacity-50"
-                      >
-                        SEND
-                      </button>
+                      <div className="absolute right-4 bottom-3 flex items-center gap-4">
+                        <span className="text-[10px] font-bold tracking-widest text-on-surface-variant/40 whitespace-nowrap">
+                          {draft.length} / 2000
+                        </span>
+                        <div className="flex items-center gap-1 border-l border-white/10 pl-4">
+                          <button
+                            type="button"
+                            aria-label="Attach file"
+                            className="text-on-surface-variant hover:text-secondary transition-colors p-1"
+                          >
+                            <span className="material-symbols-outlined">attach_file</span>
+                          </button>
+                          <button
+                            onClick={send}
+                            disabled={sending || !draft.trim()}
+                            aria-label="Send reply"
+                            className="bg-secondary text-on-secondary w-10 h-10 rounded-xl flex items-center justify-center shadow-lg hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
+                          >
+                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </footer>
               </>
             ) : (
               <div className="flex items-center justify-center h-full">

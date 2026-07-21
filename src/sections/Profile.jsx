@@ -71,8 +71,9 @@ export default function Profile({ active, onBack }) {
                 value={form.full_name}
                   onChange={(e) => setForm({ ...form, full_name: e.target.value })}
                   className="w-full bg-transparent border-b-2 border-outline-variant py-3 focus:border-secondary outline-none text-primary"
-                  placeholder="John Doe"
-                />
+                placeholder="John Doe"
+                autoComplete="name"
+                 />
               ) : (
                 <p className="text-primary text-lg font-display">{profile?.full_name || "—"}</p>
               )}
@@ -97,7 +98,8 @@ export default function Profile({ active, onBack }) {
                   onChange={(e) => setForm({ ...form, avatar_url: e.target.value })}
                   className="w-full bg-transparent border-b-2 border-outline-variant py-3 focus:border-secondary outline-none text-primary"
                   placeholder="https://example.com/avatar.jpg"
-                />
+                  autoComplete="photo"
+                 />
                 <p className="text-xs text-on-surface-variant/80 mt-1">Avatar upload will be available soon.</p>
               </div>
             )}

@@ -3,7 +3,6 @@ import { useState, useEffect, createContext, useContext, useCallback } from "rea
 import { authService } from "../services/supabase.service";
 import { profileService } from "../services/profile.service";
 import { login as loginService, register as registerService, logout as logoutService } from "../features/auth/auth.service";
-import { notificationService } from "../services/notification.service";
 
 const AuthContext = createContext(null);
 
@@ -11,16 +10,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   const fetchProfile = useCallback(async (userId) => {
     const { data } = await profileService.getProfile(userId);
     if (data) setProfile(data);
-  }, []);
-
-  const fetchUnreadCount = useCallback(async (userId) => {
-    const { count } = await notificationService.getUnreadCount(userId);
-    setUnreadCount(count || 0);
   }, []);
 
   useEffect(() => {
@@ -48,14 +41,8 @@ export function AuthProvider({ children }) {
         } catch (err) {
           console.error("Failed to fetch profile on auth change:", err);
         }
-        try {
-          await fetchUnreadCount(session.user.id);
-        } catch (err) {
-          console.error("Failed to fetch unread count:", err);
-        }
       } else {
         setProfile(null);
-        setUnreadCount(0);
       }
       setLoading(false);
     });
@@ -64,13 +51,12 @@ export function AuthProvider({ children }) {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [fetchProfile, fetchUnreadCount]);
+  }, [fetchProfile]);
 
   const login = async (email, password) => {
     const { data, error } = await loginService(email, password);
     if (!error && data?.user) {
       fetchProfile(data.user.id);
-      fetchUnreadCount(data.user.id);
     }
     return { data, error };
   };
@@ -79,7 +65,6 @@ export function AuthProvider({ children }) {
     const { data, error } = await registerService(email, password);
     if (!error && data?.user) {
       fetchProfile(data.user.id);
-      fetchUnreadCount(data.user.id);
     }
     return { data, error };
   };
@@ -87,7 +72,6 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     const { error } = await logoutService();
     setProfile(null);
-    setUnreadCount(0);
     return { error };
   };
 
@@ -97,13 +81,9 @@ export function AuthProvider({ children }) {
     return { data, error };
   };
 
-  const refreshNotifications = async () => {
-    if (user) await fetchUnreadCount(user.id);
-  };
-
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "User";
 
-  const value = { user, profile, loading, unreadCount, login, register, logout, updateProfile, refreshNotifications, displayName };
+  const value = { user, profile, loading, login, register, logout, updateProfile, displayName };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

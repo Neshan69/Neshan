@@ -26,15 +26,7 @@
  * @property {ID} conversation_id
  * @property {ID} sender_id
  * @property {string} message
- * @property {string} [created_at]
- *
- * @typedef {Object} Notification
- * @property {ID} id
- * @property {ID} user_id
- * @property {ID} [message_id]
- * @property {string} type
- * @property {boolean} read
- * @property {string} [created_at]
+  * @property {string} [created_at]
  */
 
 export const Database = {
@@ -43,7 +35,6 @@ export const Database = {
     conversations: "conversations",
     conversation_participants: "conversation_participants",
     messages: "messages",
-    notifications: "notifications",
   },
 };
 

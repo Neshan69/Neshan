@@ -1,7 +1,7 @@
 // MicroLabel: the canonical uppercase, tracked-out micro-label used across
 // sections (01 / CAPABILITIES, etc). Extracted per component-rules.md.
-// `muted` (default true) applies the softened opacity used on most labels.
-export default function MicroLabel({ children, className = "", muted = true }) {
+// `muted` softens the label opacity on certain backgrounds.
+export default function MicroLabel({ children, className = "", muted = false }) {
   return (
     <span
       className={`text-secondary font-bold text-[10px] tracking-[0.2em] uppercase ${

@@ -84,10 +84,25 @@ function Portfolio() {
 
   useEffect(() => {
     const onKey = (e) => {
+      const tag = (e.target?.tagName || "").toLowerCase();
+      const isEditable =
+        tag === "input" ||
+        tag === "textarea" ||
+        tag === "select" ||
+        e.target?.isContentEditable;
+      if (isEditable || e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === "ArrowRight" && indexRef.current < SECTIONS.length - 1) {
         goTo(indexRef.current + 1);
+        e.preventDefault();
       } else if (e.key === "ArrowLeft" && indexRef.current > 0) {
         goTo(indexRef.current - 1);
+        e.preventDefault();
+      } else if (e.key === "Home") {
+        goTo(0);
+        e.preventDefault();
+      } else if (e.key === "End") {
+        goTo(SECTIONS.length - 1);
+        e.preventDefault();
       }
     };
     window.addEventListener("keydown", onKey);
@@ -101,6 +116,13 @@ function Portfolio() {
     if (view !== "portfolio") return;
 
     const onWheel = (e) => {
+      const tag = (e.target?.tagName || "").toLowerCase();
+      const isEditable =
+        tag === "input" ||
+        tag === "textarea" ||
+        tag === "select" ||
+        e.target?.isContentEditable;
+      if (isEditable) return;
       const verticalIntent = Math.abs(e.deltaY) >= Math.abs(e.deltaX);
       const delta = verticalIntent ? e.deltaY : e.deltaX;
       if (Math.abs(delta) < 8) return;

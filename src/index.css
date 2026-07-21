@@ -12,7 +12,6 @@ body {
   background-color: #08080a;
   color: #ffffff;
   font-family: 'Inter', sans-serif;
-  overflow: hidden; /* Disable vertical scroll to force horizontal experience on desktop */
 }
 
 .material-symbols-outlined {
@@ -57,11 +56,33 @@ body {
   }
 }
 
-/* Accessible focus ring: never remove outlines without a replacement. */
+/* Accessible focus ring: never remove outlines without a replacement.
+   Works for keyboard and pointer; high-contrast #3cd7ff on dark surfaces. */
 :focus-visible {
   outline: 2px solid #3cd7ff;
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+/* Fallback for browsers/elements where :focus-visible is not reliable
+   (e.g. tabIndex-driven scroll regions). Never leave focus invisible. */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+[tabindex]:focus {
+  outline: 2px solid #3cd7ff;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* High-contrast focus treatment for scroll regions and form controls so the
+   ring is always distinguishable from the surrounding borders. */
+.work-grid:focus-visible,
+.chat-container:focus-visible {
+  outline: 2px solid #3cd7ff;
+  outline-offset: 3px;
 }
 
 /* Chat ("Let's Talk") page — see src/sections/Chat.jsx */
@@ -153,8 +174,42 @@ body {
 }
 
 ::selection {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #3cd7ff;
+  color: #08080a;
+}
+
+/* Admin panel glass card */
+.glass-card {
+  background: rgba(22, 22, 28, 0.55);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Scroll snap alignment for section-slider feel */
+.snap-center-force {
+  scroll-snap-align: center;
+}
+
+/* Admin panel glass card — obsidian-flux design tokens (see
+   src/features/admin/pages/Messages.jsx). Additive helpers only. */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.inner-glow {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.status-pulse {
+  animation: status-pulse 2s infinite ease-in-out;
+}
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
 }
 
 /* Respect reduced-motion: kill non-essential transitions/animations.
