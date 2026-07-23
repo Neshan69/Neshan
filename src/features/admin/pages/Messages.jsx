@@ -5,21 +5,10 @@ import { supabase } from "../../../lib/supabase";
 import ChatBubble from "../../../components/ChatBubble";
 import { timeAgo } from "../../../lib/chat-utils";
 import ConfirmDialog from "../../../components/ConfirmDialog";
+import Avatar from "../../../components/Avatar";
 
 function formatTime(iso) {
   return timeAgo(iso);
-}
-
-function getInitials(name, email) {
-  if (name && name.trim()) {
-    return name
-      .trim()
-      .split(/\s+/)
-      .slice(0, 2)
-      .map((p) => p[0]?.toUpperCase() || "")
-      .join("");
-  }
-  return email?.[0]?.toUpperCase() || "?";
 }
 
 export default function AdminMessages() {
@@ -278,7 +267,6 @@ export default function AdminMessages() {
               ) : (
                 filteredConversations.map((c) => {
                   const displayName = c.user?.full_name || c.user?.email || "Unknown User";
-                  const email = c.user?.email || "";
                   const avatar = c.user?.avatar_url;
                    const lastMessage = c.lastMessage?.message || "";
                    const status = c.status || "active";
@@ -295,17 +283,12 @@ export default function AdminMessages() {
                           : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
                       }`}
                     >
-                      <div className="w-12 h-12 rounded-lg bg-surface-container-high overflow-hidden shrink-0">
-                        {avatar ? (
-                          <img src={avatar} alt={displayName} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <span className="text-sm font-bold text-secondary uppercase">
-                              {getInitials(c.user?.full_name, email)}
-                            </span>
-                          </div>
-                        )}
-                      </div>
+                      <Avatar
+                        src={avatar}
+                        name={displayName}
+                        size="lg"
+                        className="rounded-lg"
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start mb-1">
                           <h3 className={`font-semibold truncate ${active ? "text-on-surface" : "text-on-surface-variant"}`}>
@@ -361,17 +344,11 @@ export default function AdminMessages() {
                      >
                        <span className="material-symbols-outlined text-xl">arrow_back</span>
                      </button>
-                      <div className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border dark:border-white/10 border-black/10 shrink-0">
-                      {selectedConversation.user?.avatar_url ? (
-                        <img src={selectedConversation.user.avatar_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-xs font-bold text-secondary uppercase">
-                            {getInitials(selectedConversation.user?.full_name, selectedConversation.user?.email || "")}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                      <Avatar
+                        src={selectedConversation.user?.avatar_url}
+                        name={selectedConversation.user?.full_name || selectedConversation.user?.email || "Unknown User"}
+                        size="md"
+                      />
                     <div>
                       <h2 className="font-display text-xl font-bold text-on-surface">
                         {selectedConversation.user?.full_name || selectedConversation.user?.email || "Unknown User"}

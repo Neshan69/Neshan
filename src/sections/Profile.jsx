@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Reveal from "../components/Reveal";
 import MicroLabel from "../components/MicroLabel";
+import Avatar from "../components/Avatar";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Profile({ active, onBack }) {
@@ -57,11 +58,7 @@ export default function Profile({ active, onBack }) {
           <p className="text-on-surface-variant">Please sign in to view your profile.</p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
-            {profile?.avatar_url && !editing && (
-              <div className="w-24 h-24 rounded-full overflow-hidden border dark:border-white/10 border-black/10 mb-4">
-                <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-              </div>
-            )}
+            <Avatar src={profile?.avatar_url} name={profile?.full_name} size="xl" />
 
             <div>
               <label htmlFor="profile-full-name" className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase">Full Name</label>

@@ -3,18 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { chatService } from "../services/chat.service";
 import { supabase } from "../lib/supabase";
 import ChatBubble from "../components/ChatBubble";
-
-function getInitials(name, email) {
-  if (name && name.trim()) {
-    return name
-      .trim()
-      .split(/\s+/)
-      .slice(0, 2)
-      .map((p) => p[0]?.toUpperCase() || "")
-      .join("");
-  }
-  return email?.[0]?.toUpperCase() || "?";
-}
+import Avatar from "../components/Avatar";
 
 const NAV = [
   { label: "EXPERTISE", index: 0 },
@@ -199,17 +188,9 @@ export default function Chat({ onBack, onExit }) {
         <h1 className="sr-only">Chat with support</h1>
         {admin && (
            <div className="flex items-center gap-4 mb-6 pb-4 border-b dark:border-white/5 border-black/5">
-             <div className="w-12 h-12 rounded-xl bg-surface-container-high overflow-hidden shrink-0 border dark:border-white/10 border-black/10">
-              {admin.avatar_url ? (
-                <img src={admin.avatar_url} alt={admin.full_name || "Admin"} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-sm font-bold text-secondary uppercase">
-                    {getInitials(admin.full_name, admin.email)}
-                  </span>
-                </div>
-              )}
-            </div>
+              <div className="w-12 h-12 rounded-xl bg-surface-container-high overflow-hidden shrink-0 border dark:border-white/10 border-black/10">
+                <Avatar src={admin.avatar_url} name={admin.full_name || "Support Team"} size="lg" />
+              </div>
             <div>
               <h2 className="font-display text-lg font-bold text-on-surface">
                 {admin.full_name || "Support Team"}

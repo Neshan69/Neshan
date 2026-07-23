@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet, NavLink, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { AdminRoutes } from "../../types";
+import Avatar from "../../components/Avatar";
 
 const NAV = [
   { path: AdminRoutes.DASHBOARD, label: "Dashboard", icon: "dashboard", end: true },
@@ -125,31 +126,20 @@ export default function AdminLayout() {
             })}
           </nav>
           <div className="mt-auto pt-6 border-t dark:border-white/5 border-black/5 px-2">
-            <div className="flex items-center gap-3 p-2">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high relative">
-                {profile?.avatar_url ? (
-                  <img className="w-full h-full object-cover" src={profile.avatar_url} alt="" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-sm font-bold text-secondary uppercase">
-                      {displayName.slice(0, 1)}
-                    </span>
-                  </div>
-                )}
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-secondary rounded-full border-2 border-surface" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-on-surface font-semibold truncate">{displayName}</p>
-                <p className="text-on-surface-variant text-[12px] truncate">Active Now</p>
-              </div>
-              <NavLink
-                to={AdminRoutes.SETTINGS}
-                onClick={() => setDrawerOpen(false)}
-                className="text-on-surface-variant hover:text-primary transition-colors"
-              >
-                <span className="material-symbols-outlined">settings</span>
-              </NavLink>
+          <div className="flex items-center gap-3 p-2">
+            <Avatar src={profile?.avatar_url} name={displayName} size="md" />
+            <div className="flex-1 min-w-0">
+              <p className="text-on-surface font-semibold truncate">{displayName}</p>
+              <p className="text-on-surface-variant text-[12px] truncate">Active Now</p>
             </div>
+            <NavLink
+              to={AdminRoutes.SETTINGS}
+              onClick={() => setDrawerOpen(false)}
+              className="text-on-surface-variant hover:text-primary transition-colors"
+            >
+              <span className="material-symbols-outlined">settings</span>
+            </NavLink>
+          </div>
           </div>
         </div>
       </aside>
