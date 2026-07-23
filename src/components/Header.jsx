@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import AuthModal from "../features/auth/AuthModal";
 import { AdminRoutes } from "../types";
 import ConfirmDialog from "../components/ConfirmDialog";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function Header({ onContact }) {
   const navigate = useNavigate();
@@ -39,36 +40,37 @@ export default function Header({ onContact }) {
         <div className="font-display font-bold text-xl md:text-2xl tracking-tight text-primary uppercase">
           Neshan Niroula
         </div>
-        <div className="relative">
+        <div className="relative flex items-center gap-2">
+          <ThemeToggle />
           {loading ? (
-            <div className="w-20 h-8 bg-white/10 rounded-full animate-pulse" />
+            <div className="w-20 h-8 bg-black/10 dark:bg-white/10 rounded-full animate-pulse" />
           ) : user ? (
             <>
               <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setShowMenu(!showMenu)}
-            aria-expanded={showMenu}
-            aria-haspopup="true"
-            className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full hover:border-secondary/40 transition-colors"
-          >
-            <span className="text-primary text-xs font-bold tracking-widest">{displayName}</span>
-            <span className="material-symbols-outlined text-sm text-primary" aria-hidden="true">expand_more</span>
-          </button>
+                <button
+                  type="button"
+                  onClick={() => setShowMenu(!showMenu)}
+                  aria-expanded={showMenu}
+                  aria-haspopup="true"
+                  className="flex items-center gap-2 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 px-4 py-2 rounded-full hover:border-secondary/40 transition-colors"
+                >
+                  <span className="text-primary text-xs font-bold tracking-widest">{displayName}</span>
+                  <span className="material-symbols-outlined text-sm text-primary" aria-hidden="true">expand_more</span>
+                </button>
               </div>
               {showMenu && (
                 <div ref={menuRef} role="menu" aria-label="Account menu" className="absolute right-0 top-full mt-2 w-48 glass-card rounded-xl overflow-hidden py-2">
                   {profile?.role === "admin" && (
-                    <button role="menuitem" onClick={() => { navigate(AdminRoutes.DASHBOARD); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
-                      Admin
-                    </button>
-                  )}
-                  <button role="menuitem" onClick={() => { onContact?.(); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
-                    Chat
-                  </button>
-                  <button role="menuitem" onClick={() => setShowSignOutConfirm(true)} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-white/5 transition-colors">
-                    Sign out
-                  </button>
+                     <button role="menuitem" onClick={() => { navigate(AdminRoutes.DASHBOARD); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                       Admin
+                     </button>
+                   )}
+                   <button role="menuitem" onClick={() => { onContact?.(); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                     Chat
+                   </button>
+                   <button role="menuitem" onClick={() => setShowSignOutConfirm(true)} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                     Sign out
+                   </button>
                 </div>
               )}
             </>
@@ -77,7 +79,7 @@ export default function Header({ onContact }) {
               type="button"
               onClick={() => setShowAuthModal(true)}
               aria-label="Start a conversation — go to contact"
-              className="bg-primary text-surface px-4 md:px-6 py-2 text-[10px] font-bold tracking-widest hover:bg-secondary hover:text-white transition-all duration-500"
+              className="bg-primary text-surface px-4 md:px-6 py-2 text-[10px] font-bold tracking-widest hover:bg-secondary hover:text-on-secondary transition-all duration-500"
             >
               LET'S TALK
             </button>

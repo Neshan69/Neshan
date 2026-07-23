@@ -54,7 +54,7 @@ function Portfolio() {
   const touchYRef = useRef(null);
   const { user, loading } = useAuth();
 
-  const TRANSITION_MS = 800;
+  const TRANSITION_MS = 640;
 
   // Slide to a section one page at a time. `animatingRef` locks input during
   // the transition so a single gesture can't skip multiple pages.
@@ -197,7 +197,7 @@ function Portfolio() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
+            transition={{ duration: 0.28, ease: "easeInOut" }}
           >
             <AuthModal onClose={closeChat} />
           </motion.div>
@@ -207,7 +207,7 @@ function Portfolio() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
+            transition={{ duration: 0.28, ease: "easeInOut" }}
           >
             <Suspense fallback={<LoadingFallback />}>
               <Chat onBack={closeChat} onExit={goToSection} />
@@ -219,7 +219,7 @@ function Portfolio() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
+            transition={{ duration: 0.28, ease: "easeInOut" }}
           >
             <Suspense fallback={<LoadingFallback />}>
               <Profile onBack={closeProfile} />
@@ -231,7 +231,7 @@ function Portfolio() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
+            transition={{ duration: 0.28, ease: "easeInOut" }}
           >
             <main
               id="main"

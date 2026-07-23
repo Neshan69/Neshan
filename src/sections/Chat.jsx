@@ -161,18 +161,18 @@ export default function Chat({ onBack, onExit }) {
   };
 
   return (
-    <div className="relative z-10 flex flex-col h-screen">
-      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute inset-0 bg-[#0f1113]" />
-        <div className="absolute inset-0 opacity-20 mix-blend-screen">
-          <img
-            alt=""
-            className="w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida/AP1WRLsaLWX2cSlhXe-oT3Uo4oL9L-gc-AIjHRo4zzI3zeLsbe3zGDxtoJXfaLcWkqQ0KArurPLHpKtVpeAk38Ay7LXHTNS8nE5Cp4MR7mMhz4FvzrpR8-HjZ7qK71U0HHDOaUPJpXFiwtnwBdo8zrPlN4Pjsaan5z1VpZU_JG5Mnq0-cPVp07t5P4CjBPGa9bOGjhxAluI-1mYZUWi7lW_g2HaGjrJlyAO9HOujChU2SPxGsvvznKijVyZT7w"
-          />
+      <div className="relative z-10 flex flex-col h-screen">
+        <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
+          <div className="absolute inset-0 bg-surface-container-lowest" />
+          <div className="absolute inset-0 opacity-20 dark:opacity-20 dark:mix-blend-screen overflow-hidden">
+            <img
+              alt=""
+              className="w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida/AP1WRLsaLWX2cSlhXe-oT3Uo4oL9L-gc-AIjHRo4zzI3zeLsbe3zGDxtoJXfaLcWkqQ0KArurPLHpKtVpeAk38Ay7LXHTNS8nE5Cp4MR7mMhz4FvzrpR8-HjZ7qK71U0HHDOaUPJpXFiwtnwBdo8zrPlN4Pjsaan5z1VpZU_JG5Mnq0-cPVp07t5P4CjBPGa9bOGjhxAluI-1mYZUWi7lW_g2HaGjrJlyAO9HOujChU2SPxGsvvznKijVyZT7w"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-surface-container-lowest/80 via-transparent to-surface-container-lowest/90" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f1113]/80 via-transparent to-[#0f1113]/90" />
-      </div>
 
       <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-16 py-6 md:py-8">
         <button
@@ -198,8 +198,8 @@ export default function Chat({ onBack, onExit }) {
       >
         <h1 className="sr-only">Chat with support</h1>
         {admin && (
-          <div className="flex items-center gap-4 mb-6 pb-4 border-b border-white/5">
-            <div className="w-12 h-12 rounded-xl bg-surface-container-high overflow-hidden shrink-0 border border-white/10">
+           <div className="flex items-center gap-4 mb-6 pb-4 border-b dark:border-white/5 border-black/5">
+             <div className="w-12 h-12 rounded-xl bg-surface-container-high overflow-hidden shrink-0 border dark:border-white/10 border-black/10">
               {admin.avatar_url ? (
                 <img src={admin.avatar_url} alt={admin.full_name || "Admin"} className="w-full h-full object-cover" />
               ) : (
@@ -247,7 +247,7 @@ export default function Chat({ onBack, onExit }) {
 
       <div className="fixed bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 md:px-6 z-50">
         <form
-          className="glass-nav rounded-2xl p-2 flex items-center gap-2 shadow-2xl border border-white/5"
+           className="glass-nav rounded-2xl p-2 flex items-center gap-2 shadow-2xl border dark:border-white/5 border-black/5"
           onSubmit={(e) => {
             e.preventDefault();
             send();

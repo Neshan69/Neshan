@@ -1,0 +1,45 @@
+{
+  "name": "ui-development",
+  "description": "Senior frontend/UI engineering playbook for React + Vite + Tailwind CSS + Framer Motion. Covers component design, responsive layouts, accessibility (WCAG), performance optimization, reusable components, clean code, preserving existing functionality, and production-ready code standards.",
+  "version": "1.0.0",
+  "author": "Portfolio Engineering",
+  "tags": [
+    "react",
+    "vite",
+    "tailwind-css",
+    "framer-motion",
+    "frontend",
+    "ui",
+    "accessibility",
+    "responsive-design",
+    "performance",
+    "clean-code",
+    "components",
+    "design-system",
+    "production-ready",
+    "lint",
+    "build"
+  ],
+  "category": "engineering",
+  "appliesTo": [
+    "src/components/**/*.jsx",
+    "src/sections/**/*.jsx",
+    "src/hooks/**/*.js",
+    "src/index.css",
+    "tailwind.config.js"
+  ],
+  "relatedSkills": [
+    "react-guidelines",
+    "tailwind-guidelines",
+    "responsive-design",
+    "accessibility",
+    "performance",
+    "animation-guidelines",
+    "design-system",
+    "react-development",
+    "component-rules",
+    "hooks",
+    "verification",
+    "quality-gates"
+  ]
+}

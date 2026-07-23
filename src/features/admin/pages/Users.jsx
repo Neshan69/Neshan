@@ -38,7 +38,7 @@ export default function AdminUsers() {
           <table className="w-full">
             <caption className="sr-only">Registered users</caption>
             <thead>
-              <tr className="border-b border-white/5">
+              <tr className="border-b dark:border-white/5 border-black/5">
                 <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Name</th>
                 <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Email</th>
                 <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Role</th>
@@ -61,7 +61,7 @@ export default function AdminUsers() {
                 </tr>
               ) : (
                 users.map((u) => (
-                  <tr key={u.id} className="border-b border-white/5 last:border-b-0">
+                  <tr key={u.id} className="border-b dark:border-white/5 border-black/5 last:border-b-0">
                     <th scope="row" className="text-left font-normal px-6 py-4 text-primary">{u.full_name || "—"}</th>
                     <td className="px-6 py-4 text-on-surface-variant">{u.email || "—"}</td>
                     <td className="px-6 py-4">

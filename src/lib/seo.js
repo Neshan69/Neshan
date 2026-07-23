@@ -1,6 +1,6 @@
-const SITE_URL = "https://neshanniroula.com";
+const SITE_URL = "https://neshanniroula.com.np";
 const SITE_NAME = "Neshan Niroula";
-const OG_IMAGE = `${SITE_URL}/og-image.svg`;
+const OG_IMAGE = `${SITE_URL}/og-image.png`;
 const OG_IMAGE_WIDTH = "1200";
 const OG_IMAGE_HEIGHT = "630";
 const LOCALE = "en_US";

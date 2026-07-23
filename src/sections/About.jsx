@@ -12,20 +12,20 @@ export default function About({ active }) {
       }`}
     >
       <Reveal className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-12 gap-8 px-6 md:px-16 lg:px-24 items-center">
-         <div className="md:col-span-5 relative">
-           <div className="aspect-[3/4] bg-outline-variant/30 overflow-hidden rounded-lg border border-white/5">
-             <SmartImage
-               className="w-full h-full object-cover grayscale brightness-75"
-               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxBRQzHYlnxt10ZHIlpblZijaSZFkmur-2F0yXzkOCdGjQHK5dVfLpAuXt2xKIJYoHjp0PzT-SV4Tfy4wG-4FqCBAbseN20I4kStJ7Jahf8RmJqJLqJly1ySibnD8l3rjHyFDRYR264xUTHYffXdTSqYpIEN_oYczCqH2dfwBzhGGgBL8tB_8hkf1gZikM6oqxeOj3IG2562n8SrqGF91uM9zbbDjBF50wj6VSMWayJrDKRD_mVNi1iC0723wT3Wji7iIuUY0IC-s"
-               alt="Professional portrait of a high-end UI designer in a minimalist studio environment, soft side lighting, monochrome aesthetic."
-             />
-           </div>
-           <div className="absolute -bottom-6 -right-6 bg-secondary text-surface p-6 hidden md:block shadow-[0_0_20px_rgba(60,215,255,0.4)]">
-             <p className="text-[10px] font-bold tracking-widest mb-2 uppercase">EXPERIENCE</p>
-             <p className="text-3xl font-display font-bold">12+</p>
-             <p className="text-[10px] font-bold uppercase opacity-80">YEARS OF CRAFT</p>
-           </div>
-         </div>
+          <div className="md:col-span-5 relative">
+            <div className="aspect-[3/4] bg-outline-variant/30 overflow-hidden rounded-lg border border-outline-variant/10">
+              <SmartImage
+                className="w-full h-full object-cover grayscale brightness-75"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxBRQzHYlnxt10ZHIlpblZijaSZFkmur-2F0yXzkOCdGjQHK5dVfLpAuXt2xKIJYoHjp0PzT-SV4Tfy4wG-4FqCBAbseN20I4kStJ7Jahf8RmJqJLqJly1ySibnD8l3rjHyFDRYR264xUTHYffXdTSqYpIEN_oYczCqH2dfwBzhGGgBL8tB_8hkf1gZikM6oqxeOj3IG2562n8SrqGF91uM9zbbDjBF50wj6VSMWayJrDKRD_mVNi1iC0723wT3Wji7iIuUY0IC-s"
+                alt="Professional portrait of a high-end UI designer in a minimalist studio environment, soft side lighting, monochrome aesthetic."
+              />
+            </div>
+            <div className="absolute -bottom-6 -right-6 bg-secondary text-surface p-6 hidden md:block shadow-[0_0_20px_rgba(60,215,255,0.4)]">
+              <p className="text-[10px] font-bold tracking-widest mb-2 uppercase">EXPERIENCE</p>
+              <p className="text-3xl font-display font-bold">12+</p>
+              <p className="text-[10px] font-bold uppercase opacity-80">YEARS OF CRAFT</p>
+            </div>
+          </div>
          <div className="md:col-span-7 space-y-6">
             <h2>
               <MicroLabel className="block" muted={false}>03 / PHILOSOPHY</MicroLabel>

@@ -4,13 +4,14 @@
 
 html {
   scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #08080a;
-  color: #ffffff;
+  background-color: rgb(var(--color-surface) / <alpha-value>);
+  color: rgb(var(--color-on-surface) / <alpha-value>);
   font-family: 'Inter', sans-serif;
 }
 
@@ -18,8 +19,85 @@ body {
   font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
 }
 
-/* Viewport for the one-page-at-a-time horizontal slider. No native scroll:
-   the inner `.horizontal-track` is translated with a CSS transition. */
+:root {
+  --color-surface: 250 250 250;
+  --color-surface-container: 240 240 240;
+  --color-surface-container-lowest: 255 255 255;
+  --color-surface-container-low: 244 244 246;
+  --color-surface-container-high: 232 232 236;
+  --color-surface-container-highest: 224 224 230;
+  --color-surface-bright: 255 255 255;
+  --color-surface-dim: 249 249 251;
+  --color-on-surface: 28 28 30;
+  --color-on-surface-variant: 107 107 112;
+  --color-inverse-on-surface: 250 250 250;
+  --color-inverse-surface: 28 28 30;
+  --color-primary: 28 28 30;
+  --color-on-primary: 250 250 250;
+  --color-primary-container: 220 227 235;
+  --color-on-primary-container: 0 42 70;
+  --color-secondary: 0 137 161;
+  --color-on-secondary: 255 255 255;
+  --color-secondary-container: 204 237 245;
+  --color-on-secondary-container: 0 62 74;
+  --color-error: 186 26 26;
+  --color-on-error: 255 255 255;
+  --color-error-container: 255 218 214;
+  --color-on-error-container: 65 14 14;
+  --color-outline: 209 209 213;
+  --color-outline-variant: 229 229 233;
+
+  --glass-bg: 255 255 255;
+  --glass-border: 0 0 0 / 0.08;
+  --glass-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --chat-bubble-user-bg: 204 237 245;
+  --chat-bubble-user-text: 0 62 74;
+  --chat-bubble-admin-bg: 229 229 233;
+  --chat-bubble-admin-text: 28 28 30;
+  --scrollbar-thumb: 0 137 161;
+  --scrollbar-track: 229 229 233;
+}
+
+.dark {
+  --color-surface: 8 8 10;
+  --color-surface-container: 12 12 14;
+  --color-surface-container-lowest: 0 0 0;
+  --color-surface-container-low: 16 16 20;
+  --color-surface-container-high: 22 22 28;
+  --color-surface-container-highest: 28 28 36;
+  --color-surface-bright: 26 26 34;
+  --color-surface-dim: 6 6 10;
+  --color-on-surface: 226 226 226;
+  --color-on-surface-variant: 160 160 160;
+  --color-inverse-on-surface: 8 8 10;
+  --color-inverse-surface: 226 226 226;
+  --color-primary: 255 255 255;
+  --color-on-primary: 8 8 10;
+  --color-primary-container: 29 42 58;
+  --color-on-primary-container: 188 212 255;
+  --color-secondary: 60 215 255;
+  --color-on-secondary: 8 8 10;
+  --color-secondary-container: 10 90 110;
+  --color-on-secondary-container: 189 238 251;
+  --color-error: 255 180 171;
+  --color-on-error: 105 0 5;
+  --color-error-container: 147 0 10;
+  --color-on-error-container: 255 218 214;
+  --color-outline: 69 71 74;
+  --color-outline-variant: 44 44 46;
+
+  --glass-bg: 8 8 10;
+  --glass-border: 255 255 255 / 0.06;
+  --glass-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --chat-bubble-user-bg: 10 90 110;
+  --chat-bubble-user-text: 189 238 251;
+  --chat-bubble-admin-bg: 44 44 46;
+  --chat-bubble-admin-text: 226 226 226;
+  --scrollbar-thumb: 60 215 255;
+  --scrollbar-track: 44 44 46;
+}
+
+/* Viewport for the one-page-at-a-time horizontal slider. */
 .horizontal-scroller {
   position: relative;
   width: 100vw;
@@ -32,7 +110,7 @@ body {
   height: 100%;
   width: 100%;
   will-change: transform;
-  transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform 0.64s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .section-spread {
@@ -46,8 +124,6 @@ body {
   justify-content: center;
 }
 
-/* Large-screen readability: constrain text blocks so they never stretch
-   across a 4K monitor. */
 @media (min-width: 1536px) {
   .section-spread > * {
     max-width: 1400px;
@@ -56,46 +132,49 @@ body {
   }
 }
 
-/* Accessible focus ring: never remove outlines without a replacement.
-   Works for keyboard and pointer; high-contrast #3cd7ff on dark surfaces. */
+/* Accessible focus ring */
 :focus-visible {
-  outline: 2px solid #3cd7ff;
+  outline: 2px solid rgb(var(--color-secondary) / <alpha-value>);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* Fallback for browsers/elements where :focus-visible is not reliable
-   (e.g. tabIndex-driven scroll regions). Never leave focus invisible. */
 a:focus,
 button:focus,
 input:focus,
 textarea:focus,
 select:focus,
 [tabindex]:focus {
-  outline: 2px solid #3cd7ff;
+  outline: 2px solid rgb(var(--color-secondary) / <alpha-value>);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* High-contrast focus treatment for scroll regions and form controls so the
-   ring is always distinguishable from the surrounding borders. */
 .work-grid:focus-visible,
 .chat-container:focus-visible {
-  outline: 2px solid #3cd7ff;
+  outline: 2px solid rgb(var(--color-secondary) / <alpha-value>);
   outline-offset: 3px;
 }
 
-/* Chat ("Let's Talk") page — see src/sections/Chat.jsx */
+/* Glass chrome */
 .glass-nav {
   backdrop-filter: blur(20px);
-  background: rgba(8, 8, 10, 0.8);
-  border: 1px solid rgba(60, 215, 255, 0.2);
+  background: rgb(var(--glass-bg) / 0.8);
+  border: 1px solid rgb(var(--glass-border));
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-card {
+  background: rgb(var(--color-surface-container) / 0.55);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgb(var(--glass-border));
+  box-shadow: var(--glass-shadow);
 }
 
 .section-fade-in {
   opacity: 0;
   transform: translateY(20px);
-  transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .active .section-fade-in {
@@ -104,28 +183,28 @@ select:focus,
 }
 
 .parallax-img {
-  /* Transform is driven per-frame by JS (see src/sections/Home.jsx), so no
-     CSS transition here — it would lag behind the slider animation. */
   will-change: transform;
 }
 
-/* Chat ("Let's Talk") page — see src/sections/Chat.jsx */
+/* Chat bubbles */
 .chat-bubble-admin {
-  background: rgba(44, 44, 46, 0.6);
+  background: rgb(var(--chat-bubble-admin-bg) / 0.6);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgb(var(--glass-border));
+  color: rgb(var(--chat-bubble-admin-text));
 }
 
 .chat-bubble-user {
-  background: rgba(60, 215, 255, 0.1);
+  background: rgb(var(--chat-bubble-user-bg) / 0.3);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(60, 215, 255, 0.3);
+  border: 1px solid rgb(var(--color-secondary) / 0.3);
+  color: rgb(var(--chat-bubble-user-text));
 }
 
 .typing-dot {
   width: 4px;
   height: 4px;
-  background: #3cd7ff;
+  background: rgb(var(--color-secondary) / <alpha-value>);
   border-radius: 50%;
   animation: typing 1.4s infinite ease-in-out;
 }
@@ -156,7 +235,7 @@ select:focus,
 }
 
 .chat-container::-webkit-scrollbar-thumb {
-  background: rgba(60, 215, 255, 0.2);
+  background: rgb(var(--scrollbar-thumb) / 0.2);
   border-radius: 2px;
 }
 
@@ -165,33 +244,25 @@ select:focus,
 }
 
 .work-grid::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(var(--scrollbar-track) / 0.05);
 }
 
 .work-grid::-webkit-scrollbar-thumb {
-  background: #3cd7ff;
+  background: rgb(var(--scrollbar-thumb));
   border-radius: 2px;
 }
 
 ::selection {
-  background-color: #3cd7ff;
-  color: #08080a;
+  background-color: rgb(var(--color-secondary) / <alpha-value>);
+  color: rgb(var(--color-on-secondary) / <alpha-value>);
 }
 
-/* Admin panel glass card */
-.glass-card {
-  background: rgba(22, 22, 28, 0.55);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* Scroll snap alignment for section-slider feel */
+/* Scroll snap alignment */
 .snap-center-force {
   scroll-snap-align: center;
 }
 
-/* Admin panel glass card — obsidian-flux design tokens (see
-   src/features/admin/pages/Messages.jsx). Additive helpers only. */
+/* Scrollbar hide utility */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -201,19 +272,19 @@ select:focus,
 }
 
 .inner-glow {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgb(var(--glass-border));
 }
 
 .status-pulse {
   animation: status-pulse 2s infinite ease-in-out;
 }
+
 @keyframes status-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.35; }
 }
 
-/* Respect reduced-motion: kill non-essential transitions/animations.
-   See animation-guidelines.md + accessibility.md. */
+/* Respect reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

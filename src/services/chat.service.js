@@ -134,4 +134,24 @@ export const chatService = {
     return { data, error };
   },
 
+  activateConversation: async (conversationId) => {
+    const { data, error } = await supabase
+      .from("conversations")
+      .update({ status: "active" })
+      .eq("id", conversationId)
+      .select("*")
+      .single();
+    return { data, error };
+  },
+
+  inactivateConversation: async (conversationId) => {
+    const { data, error } = await supabase
+      .from("conversations")
+      .update({ status: "inactive" })
+      .eq("id", conversationId)
+      .select("*")
+      .single();
+    return { data, error };
+  },
+
 };

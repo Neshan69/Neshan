@@ -17,7 +17,7 @@ export default function Work({ active }) {
     <section
       id="work"
       aria-label="Selected work"
-      className={`section-spread snap-center-force bg-[#0c0c0e]/40 ${
+      className={`section-spread snap-center-force bg-surface-container/40 ${
         active ? "active" : ""
       }`}
     >
@@ -51,7 +51,7 @@ export default function Work({ active }) {
 
         <div
           ref={gridRef}
-          className="work-grid flex gap-6 overflow-x-auto pb-6 snap-x"
+          className="work-grid flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory"
           tabIndex={0}
           aria-label="Project list"
         >

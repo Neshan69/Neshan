@@ -60,7 +60,7 @@ Search Engine Optimization reference for the Neshan Niroula portfolio. This file
   Allow: /
   Disallow: /admin/
 
-  Sitemap: https://neshanniroula.com/sitemap.xml
+  Sitemap: https://neshanniroula.com.np/sitemap.xml
   ```
 - Public content is crawlable; the admin area is disallowed (it is also `noindex`).
 - Per-route `robots` meta is also emitted via Helmet (`SEO.jsx`): `index, follow` for the homepage, `noindex, nofollow` for `/admin*`, `adminUsers`, `adminMessages`, `adminSettings`, and the 404 page (values in `src/lib/seo.js`).
@@ -75,7 +75,7 @@ Search Engine Optimization reference for the Neshan Niroula portfolio. This file
 
 ## Canonical URLs
 
-- Every route emits an absolute `<link rel="canonical">` (e.g. `https://neshanniroula.com/`, `https://neshanniroula.com/admin`).
+- Every route emits an absolute `<link rel="canonical">` (e.g. `https://neshanniroula.com.np/`, `https://neshanniroula.com.np/admin`).
 - Defined per route in `src/lib/seo.js` (`canonical`), rendered by `SEO.jsx`. The homepage canonical is also statically present in `index.html`.
 - **Why absolute:** prevents duplicate-content issues from `www`/non-`www`, HTTP/HTTPS, and query-string variants. Ensure the production host serves the SPA at the canonical `SITE_URL` and redirects variants (e.g. `www.`, `http://`) to it.
 - The 404 route canonical points to `/` but is `noindex`, so it is never indexed as a duplicate.
@@ -83,7 +83,7 @@ Search Engine Optimization reference for the Neshan Niroula portfolio. This file
 ## Open Graph
 
 - Rendered by `SEO.jsx` for every route: `og:type`, `og:site_name`, `og:locale` (`en_US`), `og:title`, `og:description`, `og:url`, `og:image`, plus `og:image:width` (1200), `og:image:height` (630), and `og:image:alt`.
-- Shared image: `https://neshanniroula.com/og-image.svg` (static 1200×630 social card in `public/`).
+- Shared image: `https://neshanniroula.com.np/og-image.png` (static 1200×630 social card in `public/`).
 - The homepage also ships a static OG block in `index.html` for non-JS parsers.
 - **Tip:** if richer per-page previews are wanted later, generate a PNG/JPEG `og-image` per route (SVG is not rendered by all social scrapers) and set `og:image` per route in `src/lib/seo.js`.
 
@@ -104,10 +104,10 @@ Search Engine Optimization reference for the Neshan Niroula portfolio. This file
 
 ## Search Console setup
 
-1. Go to <https://search.google.com/search-console/> and **Add Property** → choose **URL-prefix** `https://neshanniroula.com/` (or Domain verification if you control DNS).
+1. Go to <https://search.google.com/search-console/> and **Add Property** → choose **URL-prefix** `https://neshanniroula.com.np/` (or Domain verification if you control DNS).
 2. **Verify ownership** — use the HTML tag method: add the provided `<meta name="google-site-verification" content="...">` to `<head>` in `index.html` (place it right after the `<meta name="viewport">` line), or verify via DNS TXT record.
-3. **Submit the sitemap:** in Search Console → **Sitemaps** → enter `sitemap.xml` (resolves to `https://neshanniroula.com/sitemap.xml`). It is already referenced in `robots.txt`.
-4. **Request indexing** of `https://neshanniroula.com/` via **URL Inspection**.
+3. **Submit the sitemap:** in Search Console → **Sitemaps** → enter `sitemap.xml` (resolves to `https://neshanniroula.com.np/sitemap.xml`). It is already referenced in `robots.txt`.
+4. **Request indexing** of `https://neshanniroula.com.np/` via **URL Inspection**.
 5. **Monitor:** Coverage, Mobile Usability, Core Web Vitals, and the rich-result status of the JSON-LD (test with the Rich Results Test / Schema Markup Validator).
 6. Keep `robots.txt` allowing `/` and `sitemap.xml` reachable.
 

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://neshanniroula.com/sitemap.xml
+Sitemap: https://neshanniroula.com.np/sitemap.xml

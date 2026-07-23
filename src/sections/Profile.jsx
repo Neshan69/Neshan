@@ -58,7 +58,7 @@ export default function Profile({ active, onBack }) {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {profile?.avatar_url && !editing && (
-              <div className="w-24 h-24 rounded-full overflow-hidden border border-white/10 mb-4">
+              <div className="w-24 h-24 rounded-full overflow-hidden border dark:border-white/10 border-black/10 mb-4">
                 <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
               </div>
             )}

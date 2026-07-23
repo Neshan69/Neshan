@@ -25,7 +25,7 @@ export default function AdminLayout() {
   return (
     <div className="flex h-screen w-full bg-surface text-on-surface overflow-hidden">
       {/* Navigation Drawer */}
-      <aside className="w-[280px] h-screen fixed left-0 top-0 flex flex-col p-6 border-r border-white/5 backdrop-blur-xl bg-surface z-50">
+      <aside className="w-[280px] h-screen fixed left-0 top-0 flex flex-col p-6 border-r dark:border-white/5 border-black/5 backdrop-blur-xl bg-surface z-50">
         <div className="mb-10 px-4">
           <h1 className="font-display text-2xl font-bold text-primary">Admin Panel</h1>
           <p className="text-on-surface-variant font-metadata text-[12px]">Systems Monitor</p>
@@ -33,7 +33,7 @@ export default function AdminLayout() {
             type="button"
             onClick={() => navigate("/")}
             aria-label="Back to portfolio home"
-            className="mt-4 flex items-center gap-3 px-4 py-3 rounded-xl transition-colors cursor-pointer active:scale-95 text-on-surface-variant font-medium hover:bg-white/10 text-left w-full"
+             className="mt-4 flex items-center gap-3 px-4 py-3 rounded-xl transition-colors cursor-pointer active:scale-95 text-on-surface-variant font-medium hover:bg-black/10 dark:hover:bg-white/10 text-left w-full"
           >
             <span className="material-symbols-outlined" aria-hidden="true">home</span>
             <span className="">Back to site</span>
@@ -63,8 +63,8 @@ export default function AdminLayout() {
                 className={({ isActive }) =>
                   `${base} ${
                     isActive
-                      ? "text-primary font-bold bg-white/5"
-                      : "text-on-surface-variant font-medium hover:bg-white/10"
+                      ? "text-primary font-bold bg-black/5 dark:bg-white/5"
+                      : "text-on-surface-variant font-medium hover:bg-black/10 dark:hover:bg-white/10"
                   }`
                 }
               >
@@ -74,7 +74,7 @@ export default function AdminLayout() {
             );
           })}
         </nav>
-        <div className="mt-auto pt-6 border-t border-white/5 px-2">
+        <div className="mt-auto pt-6 border-t dark:border-white/5 border-black/5 px-2">
           <div className="flex items-center gap-3 p-2">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high relative">
               {profile?.avatar_url ? (

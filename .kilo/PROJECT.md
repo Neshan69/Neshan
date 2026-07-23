@@ -75,10 +75,10 @@ architecture.md, folder-structure.md, layout-system.md.
 - Created `src/components/SEO.jsx` to render title, meta description, canonical URL, robots, OG tags, Twitter cards.
 - `main.jsx` wraps app in `HelmetProvider`.
 - `App.jsx` applies `SEO` per route: home (`/`), admin (`/admin`), admin/users, admin/messages, admin/settings, 404.
-- `index.html` base tags use `https://neshanniroula.com/`; no duplicate titles/descriptions.
+- `index.html` base tags use `https://neshanniroula.com.np/`; no duplicate titles/descriptions.
 - Semantic HTML5: `<header>` (Header), `<nav>` (NavBar), `<main>` (scroller), `<section>` (all sections), `<article>` (ProjectCard), `<footer>` (Contact.copyright + global App footer).
 - Verified `public/robots.txt` and `public/sitemap.xml` reflect actual routes.
-- Favicon (`/favicon.svg`) and social preview (`/og-image.svg`) confirmed configured.
+- Favicon (`/favicon.svg`) and social preview (`/og-image.png`) confirmed configured.
 
 ## Skill system
 All reusable engineering knowledge lives in `.kilo/skills/`. Each file is a small,

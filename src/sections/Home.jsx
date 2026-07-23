@@ -58,7 +58,7 @@ export default function Home({ active, onOpenProfile }) {
       id="home"
       ref={homeRef}
       aria-label="Introduction"
-      className={`section-spread snap-center-force relative px-8 md:px-16 ${
+      className={`section-spread snap-center-force relative px-6 md:px-16 ${
         active ? "active" : ""
       }`}
     >
@@ -95,7 +95,7 @@ export default function Home({ active, onOpenProfile }) {
           style={{ transform: "rotate(-10deg)" }}
         >
           <SmartImage
-            className="w-full h-auto shadow-2xl grayscale brightness-50 hover:grayscale-0 hover:brightness-100 transition-all duration-1000 border border-white/5 opacity-40"
+            className="w-full h-auto shadow-2xl grayscale brightness-75 dark:brightness-50 hover:grayscale-0 hover:brightness-100 transition-all duration-1000 border border-black/5 dark:border-white/5 opacity-60 dark:opacity-40"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvi7XmiRomqCVkoN0h2CxgzpINz8yNM2pwnMnUysd4ew--kjFppSd2sR0Y8dgi5JwnU9Cikdx52tD2nhwTza9O2NgWrXKC51A1S0jNB6yN2rF9HJK-qQIbW_pMn6dA_U0MbnJcfiGPEcc6s2_sUHxAK3vBoeZNNfm_wNMzkySMCAwmCEp7fbvL5Ui8m8DLcOlGekRvdFDPAN4i3PTngCqszlXYP_Hlec2KGOhhFtbd23x3iI8008RagEO6S5SP0fbTUplZxZha82c"
             alt="A high-end architectural model made of white paper and wood, minimalist studio lighting, clean shadows, premium editorial style."
           />
@@ -105,7 +105,7 @@ export default function Home({ active, onOpenProfile }) {
           style={{ transform: "rotate(15deg)" }}
         >
           <SmartImage
-            className="w-full h-auto shadow-2xl grayscale brightness-50 hover:grayscale-0 hover:brightness-100 transition-all duration-1000 border border-white/5 opacity-40"
+            className="w-full h-auto shadow-2xl grayscale brightness-75 dark:brightness-50 hover:grayscale-0 hover:brightness-100 transition-all duration-1000 border border-black/5 dark:border-white/5 opacity-60 dark:opacity-40"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLT02LbUlQM7G6AqMPtgFko31fyb65itqi-TTbI8EUSA-I7bKBu9ORHniF31c3i5WED6UG6QkTS6HlKFPbv5xV6KnyIJzWcarbx9dV2kIVlI2SNbABo-FOhjQV4GdO_eOFGFDV02hdjPUN2gNO6shimIScUtBf8AoxsavyLheQO_vf6LVi3y6bwqEBIZ9UhVHI7QPuuC4KIOeBDf6RsSKWgQ5RvdwvuXt_-dWlT_12eqnu9WNe3mcjmDqWTT0ob8QuPEpk_u7IR-M"
             alt="A stack of high-quality paper samples and a designer's brass ruler on a clean stone surface, soft natural light, editorial photography."
           />

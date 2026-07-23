@@ -5,7 +5,7 @@ const LANG = "en-US";
 const LAST_MODIFIED = "2026-07-13";
 const DESCRIPTION =
   "UI/UX Designer & Systems Architect specializing in editorial aesthetics, precision systems, and high-impact digital experiences for forward-thinking brands.";
-const OG_IMAGE = `${SITE_URL}/og-image.svg`;
+const OG_IMAGE = `${SITE_URL}/og-image.png`;
 const LOGO = `${SITE_URL}/favicon.svg`;
 const PERSON_IMAGE =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBxBRQzHYlnxt10ZHIlpblZijaSZFkmur-2F0yXzkOCdGjQHK5dVfLpAuXt2xKIJYoHjp0PzT-SV4Tfy4wG-4FqCBAbseN20I4kStJ7Jahf8RmJqJLqJly1ySibnD8l3rjHyFDRYR264xUTHYffXdTSqYpIEN_oYczCqH2dfwBzhGGgBL8tB_8hkf1gZikM6oqxeOj3IG2562n8SrqGF91uM9zbbDjBF50wj6VSMWayJrDKRD_mVNi1iC0723wT3Wji7iIuUY0IC-s";

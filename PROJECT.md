@@ -113,7 +113,7 @@ Goal: maximize Lighthouse SEO (target 100) and improve Core Web Vitals without c
 
 ### Images
 - `SmartImage` (`src/components/SmartImage.jsx`) applies `loading="lazy"`, `decoding="async"`, explicit dimensions, and an `onError` fallback to `/placeholder.svg` so external hotlinks can never break layout.
-- `og-image.svg` is a static 1200×630 social card; `robots.txt` allows `/` and disallows `/admin/`, and `sitemap.xml` lists only public, indexable URLs.
+- `og-image.png` is a static 1200×630 social card; `robots.txt` allows `/` and disallows `/admin/`, and `sitemap.xml` lists only public, indexable URLs.
 
 ### Structured Data (JSON-LD)
 - `src/lib/structuredData.js` is the single source of truth; `getStructuredData()` returns a schema.org `@graph` that is emitted **statically** in `index.html` (crawlable without JS execution).

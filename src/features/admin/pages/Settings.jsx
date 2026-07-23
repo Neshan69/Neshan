@@ -32,7 +32,7 @@ export default function AdminSettings() {
     <div className="max-w-4xl mx-auto">
       <h2 className="font-display text-4xl font-bold text-primary mb-8">Settings</h2>
 
-      <div className="glass-card rounded-xl overflow-hidden divide-y divide-white/5">
+      <div className="glass-card rounded-xl overflow-hidden divide-y dark:divide-white/5 divide-black/5">
         <div className="p-6">
           <p className="text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase mb-4">
             Admin Profile
@@ -59,7 +59,7 @@ export default function AdminSettings() {
           </div>
         </div>
 
-        <div className="p-6 flex items-center justify-between gap-4">
+        <div className="p-6 flex items-center justify-between gap-4 border-t dark:border-white/5 border-black/5">
           <div>
             <p className="text-sm font-semibold text-primary">Sign out</p>
             <p className="text-xs text-on-surface-variant">End your admin session.</p>

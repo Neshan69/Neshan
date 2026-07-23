@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "../lib/supabase";
 import Reveal from "../components/Reveal";
 import MicroLabel from "../components/MicroLabel";
 
@@ -18,6 +19,7 @@ export default function Contact({ active }) {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+  const [formError, setFormError] = useState("");
 
   const validateField = (name, value) => {
     switch (name) {
@@ -78,11 +80,53 @@ export default function Contact({ active }) {
     setStatus("sending");
     setErrors({});
 
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    const trimmed = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      subject: form.subject.trim(),
+      message: form.message.trim(),
+    };
 
-    setStatus("sent");
-    setForm({ name: "", email: "", subject: "", message: "" });
-    setTouched({});
+    try {
+      const { error: dbError } = await supabase
+        .from("contact_messages")
+        .insert([trimmed]);
+
+      if (dbError) {
+        console.error("[Contact] Failed to save message", dbError);
+        setFormError("Could not save message. Please try again.");
+        setStatus("error");
+        return;
+      }
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.replace(/\/$/, "");
+      const res = await fetch(`${supabaseUrl}/functions/v1/send-contact-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify(trimmed),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || result.error) {
+        console.error("[Contact] Edge Function error", result);
+        setFormError(result.error || "Failed to send email notification.");
+        setStatus("error");
+        return;
+      }
+
+      setStatus("sent");
+      setForm({ name: "", email: "", subject: "", message: "" });
+      setTouched({});
+      setFormError("");
+    } catch (err) {
+      console.error("[Contact] Unexpected error", err);
+      setFormError("Something went wrong. Please try again.");
+      setStatus("error");
+    }
   };
 
   const inputClass = (field) =>
@@ -96,7 +140,7 @@ export default function Contact({ active }) {
     <section
       id="contact"
       aria-label="Contact"
-      className={`section-spread snap-center-force bg-[#050506] ${
+      className={`section-spread snap-center-force bg-surface-dim ${
         active ? "active" : ""
       }`}
     >
@@ -112,7 +156,7 @@ export default function Contact({ active }) {
           </p>
         ) : status === "error" ? (
           <p role="alert" className="text-error text-sm mb-6">
-            Something went wrong. Please try again.
+            {formError || "Something went wrong. Please try again."}
           </p>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>

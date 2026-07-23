@@ -32,10 +32,14 @@ export default function AdminMessages() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [confirmComplete, setConfirmComplete] = useState(false);
+  const [confirmInactivate, setConfirmInactivate] = useState(false);
+  const [confirmActivate, setConfirmActivate] = useState(false);
   const containerRef = useRef(null);
 
   const filteredConversations = conversations.filter((c) => {
+    if (statusFilter !== "all" && c.status !== statusFilter) return false;
     if (!query.trim()) return true;
     const name = c.user?.full_name || c.user?.email || "";
     const email = c.user?.email || "";
@@ -194,14 +198,40 @@ export default function AdminMessages() {
     setConfirmComplete(false);
   };
 
+  const inactivateConversation = async () => {
+    if (!selectedId) return;
+    const { data, error } = await chatService.inactivateConversation(selectedId);
+    if (error) {
+      setError("Failed to inactivate conversation.");
+    } else if (data) {
+      setConversations((prev) =>
+        prev.map((c) => (c.id === selectedId ? data : c))
+      );
+    }
+    setConfirmInactivate(false);
+  };
+
+  const activateConversation = async () => {
+    if (!selectedId) return;
+    const { data, error } = await chatService.activateConversation(selectedId);
+    if (error) {
+      setError("Failed to activate conversation.");
+    } else if (data) {
+      setConversations((prev) =>
+        prev.map((c) => (c.id === selectedId ? data : c))
+      );
+    }
+    setConfirmActivate(false);
+  };
+
   const selectedConversation = conversations.find((c) => c.id === selectedId);
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="glass-card rounded-2xl overflow-hidden border border-white/5">
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/5 md:h-[640px]">
+      <div className="glass-card rounded-2xl overflow-hidden border dark:border-white/5 border-black/5">
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x dark:divide-white/5 divide-black/5 md:h-[640px]">
           {/* Conversation list */}
-          <section className="md:col-span-1 flex flex-col md:max-h-[640px] min-h-0 bg-surface-container-low/30 border-r border-white/5">
+          <section className="md:col-span-1 flex flex-col md:max-h-[640px] min-h-0 bg-surface-container-low/30 border-r dark:border-white/5 border-black/5">
             <header className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-display text-2xl font-bold text-on-surface">Messages</h2>
@@ -211,17 +241,33 @@ export default function AdminMessages() {
                   </span>
                 )}
               </div>
-              <div className="relative">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Filter conversations..."
-                  aria-label="Filter conversations"
-                  className="w-full bg-surface-container-lowest/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-secondary transition-colors"
-                />
-              </div>
-            </header>
+               <div className="relative">
+                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+                 <input
+                   value={query}
+                   onChange={(e) => setQuery(e.target.value)}
+                   placeholder="Filter conversations..."
+                   aria-label="Filter conversations"
+                   className="w-full bg-surface-container-lowest/50 border dark:border-white/10 border-black/10 rounded-lg pl-10 pr-4 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-secondary transition-colors"
+                 />
+               </div>
+               <div className="flex items-center gap-2 mt-3">
+                 {["all", "active", "inactive", "completed"].map((status) => (
+                   <button
+                     key={status}
+                     type="button"
+                     onClick={() => setStatusFilter(status)}
+                     className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase transition-colors ${
+                       statusFilter === status
+                         ? "bg-secondary text-on-secondary"
+                         : "bg-black/5 dark:bg-white/5 text-on-surface-variant hover:text-primary"
+                     }`}
+                   >
+                     {status}
+                   </button>
+                 ))}
+               </div>
+             </header>
             <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1 px-3 pb-3">
               {loading ? (
                 <p className="text-sm text-on-surface-variant p-4">Loading...</p>
@@ -234,17 +280,19 @@ export default function AdminMessages() {
                   const displayName = c.user?.full_name || c.user?.email || "Unknown User";
                   const email = c.user?.email || "";
                   const avatar = c.user?.avatar_url;
-                  const lastMessage = c.lastMessage?.message || "";
-                  const isCompleted = c.status === "completed";
-                  const active = selectedId === c.id;
+                   const lastMessage = c.lastMessage?.message || "";
+                   const status = c.status || "active";
+                   const isInactive = status === "inactive";
+                   const isCompleted = status === "completed";
+                   const active = selectedId === c.id;
                   return (
                     <button
                       key={c.id}
                       onClick={() => setSelectedId(c.id)}
                       className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
                         active
-                          ? "bg-white/5 border-white/10"
-                          : "border-transparent hover:bg-white/5"
+                          ? "bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10"
+                          : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
                       }`}
                     >
                       <div className="w-12 h-12 rounded-lg bg-surface-container-high overflow-hidden shrink-0">
@@ -267,20 +315,24 @@ export default function AdminMessages() {
                             {formatTime(c.lastMessageAt)}
                           </span>
                         </div>
-                        <p className="text-[11px] text-on-surface-variant/80 truncate mb-2 italic">
-                          {lastMessage || (isCompleted ? "Completed" : "No messages yet")}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          {isCompleted ? (
-                            <span className="px-2 py-0.5 rounded-full bg-white/5 text-on-surface-variant text-[10px] font-bold tracking-widest uppercase">
-                              Completed
-                            </span>
-                          ) : (
-                            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold tracking-widest uppercase">
-                              <span className="w-1.5 h-1.5 rounded-full bg-secondary status-pulse" />
-                              Active
-                            </span>
-                          )}
+                         <p className="text-[11px] text-on-surface-variant/80 truncate mb-2 italic">
+                           {lastMessage || (isCompleted ? "Completed" : isInactive ? "Inactive" : "No messages yet")}
+                         </p>
+                         <div className="flex items-center gap-2">
+                           {isCompleted ? (
+                              <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-on-surface-variant text-[10px] font-bold tracking-widest uppercase">
+                                Completed
+                             </span>
+                           ) : isInactive ? (
+                             <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/5 text-on-surface-variant text-[10px] font-bold tracking-widest uppercase">
+                               Inactive
+                             </span>
+                           ) : (
+                             <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold tracking-widest uppercase">
+                               <span className="w-1.5 h-1.5 rounded-full bg-secondary status-pulse" />
+                               Active
+                             </span>
+                           )}
                           {c.unread > 0 && (
                             <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold tracking-widest uppercase">
                               {c.unread} Unread
@@ -299,7 +351,7 @@ export default function AdminMessages() {
           <div className="md:col-span-2 flex flex-col md:h-full min-h-0">
             {selectedConversation ? (
               <>
-                 <header className="flex items-center justify-between px-6 h-20 border-b border-white/5 shrink-0">
+                  <header className="flex items-center justify-between px-6 h-20 border-b dark:border-white/5 border-black/5 shrink-0">
                    <div className="flex items-center gap-4">
                      <button
                        type="button"
@@ -309,7 +361,7 @@ export default function AdminMessages() {
                      >
                        <span className="material-symbols-outlined text-xl">arrow_back</span>
                      </button>
-                     <div className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-white/10 shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border dark:border-white/10 border-black/10 shrink-0">
                       {selectedConversation.user?.avatar_url ? (
                         <img src={selectedConversation.user.avatar_url} alt="" className="w-full h-full object-cover" />
                       ) : (
@@ -329,28 +381,64 @@ export default function AdminMessages() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    {selectedConversation.status !== "completed" && (
-                      <button
-                        type="button"
-                        onClick={() => setConfirmComplete(true)}
-                        className="bg-secondary text-on-secondary px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-[0_0_20px_rgba(60,215,255,0.3)] hover:brightness-110 active:scale-95 flex items-center gap-2"
-                      >
-                        <span className="material-symbols-outlined text-sm">check_circle</span>
-                        Complete
-                      </button>
-                    )}
-                  </div>
+                   <div className="flex items-center gap-3">
+                     {selectedConversation.status === "completed" ? (
+                       <button
+                         type="button"
+                         onClick={() => setConfirmActivate(true)}
+                         className="bg-secondary text-on-secondary px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-[0_0_20px_rgba(60,215,255,0.3)] hover:brightness-110 active:scale-95 flex items-center gap-2"
+                       >
+                         <span className="material-symbols-outlined text-sm">reopen_in_full</span>
+                         Reopen
+                       </button>
+                     ) : selectedConversation.status === "inactive" ? (
+                       <button
+                         type="button"
+                         onClick={() => setConfirmActivate(true)}
+                         className="bg-secondary text-on-secondary px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-[0_0_20px_rgba(60,215,255,0.3)] hover:brightness-110 active:scale-95 flex items-center gap-2"
+                       >
+                         <span className="material-symbols-outlined text-sm">play_circle</span>
+                         Mark Active
+                       </button>
+                     ) : (
+                       <button
+                         type="button"
+                         onClick={() => setConfirmInactivate(true)}
+                         className="bg-black/5 dark:bg-white/5 text-on-secondary px-6 py-2 rounded-lg text-sm font-bold transition-all hover:brightness-110 active:scale-95 flex items-center gap-2"
+                       >
+                         <span className="material-symbols-outlined text-sm">pause_circle</span>
+                         Mark Inactive
+                       </button>
+                     )}
+                   </div>
 
-                  <ConfirmDialog
-                    open={confirmComplete}
-                    title="Mark conversation as completed?"
-                    message="This will close the conversation. You can still view messages, but no new replies can be sent."
-                    confirmLabel="Complete"
-                    cancelLabel="Cancel"
-                    onConfirm={completeConversation}
-                    onCancel={() => setConfirmComplete(false)}
-                  />
+                   <ConfirmDialog
+                     open={confirmComplete}
+                     title="Mark conversation as completed?"
+                     message="This will close the conversation. You can still view messages, but no new replies can be sent."
+                     confirmLabel="Complete"
+                     cancelLabel="Cancel"
+                     onConfirm={completeConversation}
+                     onCancel={() => setConfirmComplete(false)}
+                   />
+                   <ConfirmDialog
+                     open={confirmInactivate}
+                     title="Mark conversation as inactive?"
+                     message="The conversation will be paused. You can reactivate it later."
+                     confirmLabel="Inactivate"
+                     cancelLabel="Cancel"
+                     onConfirm={inactivateConversation}
+                     onCancel={() => setConfirmInactivate(false)}
+                   />
+                   <ConfirmDialog
+                     open={confirmActivate}
+                     title="Mark conversation as active?"
+                     message="This will reopen the conversation and allow new replies."
+                     confirmLabel="Activate"
+                     cancelLabel="Cancel"
+                     onConfirm={activateConversation}
+                     onCancel={() => setConfirmActivate(false)}
+                   />
                 </header>
 
                 <div
@@ -370,9 +458,9 @@ export default function AdminMessages() {
                   </div>
                 </div>
 
-                <footer className="p-6 bg-surface/40 backdrop-blur-xl border-t border-white/5 shrink-0">
+                 <footer className="p-6 bg-surface/40 backdrop-blur-xl border-t dark:border-white/5 border-black/5 shrink-0">
                   <div className="max-w-[600px] mx-auto">
-                    <div className="relative bg-surface-container-lowest rounded-2xl border border-white/10 focus-within:border-secondary/50 transition-colors shadow-xl">
+                    <div className="relative bg-surface-container-lowest rounded-2xl border dark:border-white/10 border-black/10 focus-within:border-secondary/50 transition-colors shadow-xl">
                       {error && <p className="text-error text-xs px-5 pt-3">{error}</p>}
                       <textarea
                         value={draft}
@@ -398,7 +486,7 @@ export default function AdminMessages() {
                         <span className="text-[10px] font-bold tracking-widest text-on-surface-variant/40 whitespace-nowrap">
                           {draft.length} / 2000
                         </span>
-                        <div className="flex items-center gap-1 border-l border-white/10 pl-4">
+                         <div className="flex items-center gap-1 border-l dark:border-white/10 border-black/10 pl-4">
                           <button
                             type="button"
                             aria-label="Attach file"

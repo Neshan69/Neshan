@@ -85,7 +85,7 @@ export default function AuthModal({ onClose, onSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="auth-title">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 dark:bg-black/40 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="auth-title">
       <div ref={modalRef} className="glass-card w-full max-w-md mx-4 p-6 rounded-2xl" onClick={(e) => e.stopPropagation()}>
         <h2 id="auth-title" className="font-display text-2xl font-bold text-primary mb-1">{isLogin ? "Welcome back" : "Create account"}</h2>
         <p className="text-on-surface-variant text-sm mb-6">
