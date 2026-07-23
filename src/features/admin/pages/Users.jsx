@@ -39,38 +39,38 @@ export default function AdminUsers() {
             <caption className="sr-only">Registered users</caption>
             <thead>
               <tr className="border-b dark:border-white/5 border-black/5">
-                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Name</th>
-                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Email</th>
-                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Role</th>
-                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Joined</th>
-                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-6 py-4">Status</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-4 md:px-6 py-4 whitespace-nowrap">Name</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-4 md:px-6 py-4 whitespace-nowrap">Email</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-4 md:px-6 py-4 whitespace-nowrap">Role</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-4 md:px-6 py-4 whitespace-nowrap">Joined</th>
+                <th scope="col" className="text-left text-[10px] font-bold tracking-widest text-on-surface-variant/80 uppercase px-4 md:px-6 py-4 whitespace-nowrap">Status</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td scope="row" colSpan={5} className="px-6 py-8 text-center text-on-surface-variant">Loading users...</td>
+                  <td scope="row" colSpan={5} className="px-4 md:px-6 py-8 text-center text-on-surface-variant">Loading users...</td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td scope="row" colSpan={5} className="px-6 py-8 text-center text-error">{error}</td>
+                  <td scope="row" colSpan={5} className="px-4 md:px-6 py-8 text-center text-error">{error}</td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td scope="row" colSpan={5} className="px-6 py-8 text-center text-on-surface-variant">No users found.</td>
+                  <td scope="row" colSpan={5} className="px-4 md:px-6 py-8 text-center text-on-surface-variant">No users found.</td>
                 </tr>
               ) : (
                 users.map((u) => (
                   <tr key={u.id} className="border-b dark:border-white/5 border-black/5 last:border-b-0">
-                    <th scope="row" className="text-left font-normal px-6 py-4 text-primary">{u.full_name || "—"}</th>
-                    <td className="px-6 py-4 text-on-surface-variant">{u.email || "—"}</td>
-                    <td className="px-6 py-4">
+                    <th scope="row" className="text-left font-normal px-4 md:px-6 py-4 text-primary whitespace-nowrap">{u.full_name || "—"}</th>
+                    <td className="px-4 md:px-6 py-4 text-on-surface-variant whitespace-nowrap">{u.email || "—"}</td>
+                    <td className="px-4 md:px-6 py-4">
                       <span className={`text-xs font-bold tracking-widest uppercase ${u.role === "admin" ? "text-secondary" : "text-on-surface-variant"}`}>
                         {u.role || "user"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-on-surface-variant">{formatDate(u.created_at)}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4 text-on-surface-variant whitespace-nowrap">{formatDate(u.created_at)}</td>
+                    <td className="px-4 md:px-6 py-4">
                       <span className="text-xs font-bold tracking-widest uppercase text-on-surface-variant">Active</span>
                     </td>
                   </tr>

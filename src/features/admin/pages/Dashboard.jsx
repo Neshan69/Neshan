@@ -28,9 +28,9 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="font-display text-4xl font-bold text-primary mb-8">Dashboard</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="max-w-4xl mx-auto px-4 md:px-0">
+      <h2 className="font-display text-3xl md:text-4xl font-bold text-primary mb-8">Dashboard</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <div className="glass-card p-6 rounded-xl">
           <p className="text-[10px] font-bold tracking-widest text-secondary uppercase mb-2">Users</p>
           <p className="text-3xl font-display font-bold text-primary">

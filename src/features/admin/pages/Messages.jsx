@@ -227,12 +227,12 @@ export default function AdminMessages() {
   const selectedConversation = conversations.find((c) => c.id === selectedId);
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="glass-card rounded-2xl overflow-hidden border dark:border-white/5 border-black/5">
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x dark:divide-white/5 divide-black/5 md:h-[640px]">
+    <div className="max-w-6xl mx-auto h-full px-3 md:px-0">
+      <div className="glass-card rounded-2xl overflow-hidden border dark:border-white/5 border-black/5 h-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 h-full md:max-h-[640px]">
           {/* Conversation list */}
-          <section className="md:col-span-1 flex flex-col md:max-h-[640px] min-h-0 bg-surface-container-low/30 border-r dark:border-white/5 border-black/5">
-            <header className="p-6">
+          <section className={`${selectedId ? 'hidden md:flex' : 'flex'} md:col-span-1 flex-col h-full md:max-h-[640px] bg-surface-container-low/30 border-r dark:border-white/5 border-black/5`}>
+            <header className="p-4 md:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-display text-2xl font-bold text-on-surface">Messages</h2>
                 {conversations.some((c) => c.unread > 0) && (
@@ -348,10 +348,10 @@ export default function AdminMessages() {
           </section>
 
           {/* Chat detail */}
-          <div className="md:col-span-2 flex flex-col md:h-full min-h-0">
+          <div className={`${selectedId ? 'flex' : 'hidden md:flex'} md:col-span-2 flex-col h-full md:h-full`}>
             {selectedConversation ? (
               <>
-                  <header className="flex items-center justify-between px-6 h-20 border-b dark:border-white/5 border-black/5 shrink-0">
+                   <header className="flex items-center justify-between px-4 md:px-6 h-16 md:h-20 border-b dark:border-white/5 border-black/5 shrink-0">
                    <div className="flex items-center gap-4">
                      <button
                        type="button"
@@ -441,10 +441,10 @@ export default function AdminMessages() {
                    />
                 </header>
 
-                <div
-                  ref={containerRef}
-                  className="flex-1 min-h-0 overflow-y-auto px-6 py-8 scrollbar-hide chat-container"
-                >
+                 <div
+                   ref={containerRef}
+                   className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 md:py-8 scrollbar-hide chat-container"
+                 >
                   <div className="max-w-[600px] mx-auto space-y-4">
                     {messages.length === 0 ? (
                       <p className="text-sm text-on-surface-variant text-center py-8">
@@ -458,7 +458,7 @@ export default function AdminMessages() {
                   </div>
                 </div>
 
-                 <footer className="p-6 bg-surface/40 backdrop-blur-xl border-t dark:border-white/5 border-black/5 shrink-0">
+                 <footer className="p-4 md:p-6 bg-surface/40 backdrop-blur-xl border-t dark:border-white/5 border-black/5 shrink-0">
                   <div className="max-w-[600px] mx-auto">
                     <div className="relative bg-surface-container-lowest rounded-2xl border dark:border-white/10 border-black/10 focus-within:border-secondary/50 transition-colors shadow-xl">
                       {error && <p className="text-error text-xs px-5 pt-3">{error}</p>}

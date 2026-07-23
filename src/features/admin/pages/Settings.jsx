@@ -29,8 +29,8 @@ export default function AdminSettings() {
   const createdAt = profile?.created_at || user?.created_at;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="font-display text-4xl font-bold text-primary mb-8">Settings</h2>
+    <div className="max-w-4xl mx-auto px-4 md:px-0">
+      <h2 className="font-display text-3xl md:text-4xl font-bold text-primary mb-6 md:mb-8">Settings</h2>
 
       <div className="glass-card rounded-xl overflow-hidden divide-y dark:divide-white/5 divide-black/5">
         <div className="p-6">
@@ -38,23 +38,23 @@ export default function AdminSettings() {
             Admin Profile
           </p>
           <div className="space-y-4">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4">
               <span className="text-sm text-on-surface-variant">Full name</span>
-              <span className="text-sm font-semibold text-primary truncate">{fullName}</span>
+              <span className="text-sm font-semibold text-primary truncate w-full md:w-auto">{fullName}</span>
             </div>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4">
               <span className="text-sm text-on-surface-variant">Email</span>
-              <span className="text-sm font-semibold text-primary truncate">{email}</span>
+              <span className="text-sm font-semibold text-primary truncate w-full md:w-auto">{email}</span>
             </div>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4">
               <span className="text-sm text-on-surface-variant">Role</span>
               <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">
                 {role}
               </span>
             </div>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4">
               <span className="text-sm text-on-surface-variant">Account created</span>
-              <span className="text-sm font-semibold text-primary">{formatDate(createdAt)}</span>
+              <span className="text-sm font-semibold text-primary truncate w-full md:w-auto">{formatDate(createdAt)}</span>
             </div>
           </div>
         </div>
