@@ -8,6 +8,10 @@ import ErrorBoundary from './components/ErrorBoundary'
 import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 
+if (import.meta.env.DEV) {
+  console.log('GA4 initialized');
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
