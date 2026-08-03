@@ -10,8 +10,8 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background-color: rgb(var(--color-surface) / <alpha-value>);
-  color: rgb(var(--color-on-surface) / <alpha-value>);
+  background-color: rgb(var(--color-surface));
+  color: rgb(var(--color-on-surface));
   font-family: 'Inter', sans-serif;
 }
 
@@ -134,7 +134,7 @@ body {
 
 /* Accessible focus ring */
 :focus-visible {
-  outline: 2px solid rgb(var(--color-secondary) / <alpha-value>);
+  outline: 2px solid rgb(var(--color-secondary));
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -149,10 +149,9 @@ select:focus,
   outline-offset: 3px;
   border-radius: 2px;
 }
-
 .work-grid:focus-visible,
 .chat-container:focus-visible {
-  outline: 2px solid rgb(var(--color-secondary) / <alpha-value>);
+  outline: 2px solid rgb(var(--color-secondary));
   outline-offset: 3px;
 }
 
@@ -162,6 +161,54 @@ select:focus,
   background: rgb(var(--glass-bg) / 0.8);
   border: 1px solid rgb(var(--glass-border));
   box-shadow: var(--glass-shadow);
+}
+
+/* ============================================================
+   Floating Island navigation (iOS Dynamic Island-style)
+   Idle capsule + calm-water breathing + elevated expand.
+   ============================================================ */
+
+/* Resting ambient shadow + faint cyan edge (dark, non-neon). */
+.island-shadow {
+  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(0, 137, 161, 0.22);
+}
+
+/* Expanded: elevated, softer + brighter cyan edge. */
+.island-shadow-expanded {
+  box-shadow: 0 24px 52px 0 rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(0, 137, 161, 0.46);
+}
+
+/*
+ * Idle breathing: subconscious calm-water drift.
+ *   - tiny horizontal drift
+ *   - ~1.5% width nudge + whisper-thin vertical scale
+ *   - barely-perceptible cyan-glow pulse
+ * Loops every ~4s. Never bounces, never floats.
+ */
+@keyframes island-breathe {
+  0%,
+  100% {
+    transform: translateX(0) scaleX(1) scaleY(1);
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.13),
+      0 0 0 1px rgba(0, 137, 161, 0.2);
+  }
+  45% {
+    transform: translateX(-1px) scaleX(1.015) scaleY(1.01);
+    box-shadow: 0 12px 34px 0 rgba(0, 0, 0, 0.17),
+      0 0 0 1px rgba(0, 137, 161, 0.32);
+  }
+}
+
+.island-breathe {
+  animation: island-breathe 4.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .island-breathe {
+    animation: none;
+  }
 }
 
 .glass-card {
